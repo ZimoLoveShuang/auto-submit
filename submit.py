@@ -26,7 +26,7 @@ for line in res.json()['cookies'].split(';'):
     name, value = line.strip().split('=', 1)
     cookies[name] = value
 
-collectWid = 4903  # 4682
+collectWid = 5411  # 4682
 rangeSet = collectWid + 1
 
 headers = {
@@ -100,29 +100,28 @@ while collectWid < rangeSet:
          "value": "", "fieldItems": []}]}
     r = requests.post("http://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/submitForm",
                       headers=headers, cookies=cookies, data=json.dumps(body))
-
     check = r.text.split("\",\"")[1].split("\"")[2]
     checkNO1 = "该收集已结束！"
     checkNO2 = "您无需填写该信息收集，请勿代填"
     checkNO3 = "数据异常，该收集不存在，请联系管理员！"
     checkYES = "SUCCESS"
     if check == checkNO2:
-        print("不是本班,自动忽略，一秒钟后自动提交编号：%d的表单" % (num + 1))
+        print("不是本班,自动忽略，一秒钟后自动提交编号：%d的表单" % (collectWid + 1))
         time.sleep(1)
     else:
         pass
     if check == checkNO1:
-        print("该次收集已结束，无法提交，编号：", num)
+        print("该次收集已结束，无法提交，编号：", collectWid)
     else:
         pass
     if check == checkNO3:
-        print("这条信息还不存在 半小时尝试编号：", num + 1)
-        time.sleep(30 * 60)
+        print("这条信息还不存在 一分钟后尝试编号：", collectWid + 1)
+        time.sleep(1 * 60)
     else:
         pass
     if check == checkYES:
-        print("今日成功提交！ 八小时后再次启动")
-        time.sleep(8 * 60 * 60)
+        print("今日成功提交！ 十八小时后再次启动")
+        time.sleep(18 * 60 * 60)
     else:
         pass
     collectWid += 1
