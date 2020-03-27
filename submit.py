@@ -52,7 +52,7 @@ while True:
         'Content-Type': 'application/json;charset=UTF-8'
     }
 
-    param = {
+    params = {
         'pageSize': 6,
         'pageNumber': 1
     }
@@ -138,6 +138,7 @@ while True:
                   {"wid": "1438", "formWid": formWid, "fieldType": 1, "title": "备注", "description": "需要特别说明的情况",
                    "minLength": 1, "sort": "13", "maxLength": 300, "isRequired": 0, "imageCount": null,
                    "hasOtherItems": 0, "colName": "field013", "value": "", "fieldItems": []}]}
+    # printa(params)
     r = requests.post("http://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/submitForm",
                       headers=headers, cookies=cookies, data=json.dumps(params))
     msg = r.json()['message']
