@@ -66,6 +66,26 @@ while True:
     collectWid = res.json()['datas']['rows'][0]['wid']
     formWid = res.json()['datas']['rows'][0]['formWid']
 
+    res = requests.post(url='https://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/detailCollector',
+                        headers=headers, cookies=cookies, data=json.dumps({"collectorWid": collectWid}));
+    schoolTaskWid = res.json()['datas']['collector']['schoolTaskWid']
+
+    res = requests.post(url='https://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/getFormFields',
+                        headers=headers, cookies=cookies, data=json.dumps(
+            {"pageSize": 10, "pageNumber": 1, "formWid": formWid, "collectorWid": collectWid}))
+
+    form = res.json()['datas']['rows']
+    # for item in form:
+    #     printa(item)
+
+    res = requests.post(url='https://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/getFormFields',
+                        headers=headers, cookies=cookies, data=json.dumps(
+            {"pageSize": 10, "pageNumber": 2, "formWid": formWid, "collectorWid": collectWid}))
+    moreForm = res.json()['datas']['rows']
+    # printa('\n')
+    # for item in moreForm:
+    #     printa(item)
+
     headers = {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.12.4',
         'CpdailyStandAlone': '0',
@@ -81,64 +101,77 @@ while True:
     null = ''
 
     # 默认正常的提交参数json
-    params = {"formWid": formWid, "address": address, "collectWid": collectWid, "schoolTaskWid": "24368",
+    params = {"formWid": formWid, "address": address, "collectWid": collectWid, "schoolTaskWid": schoolTaskWid,
               "form": [
-                  {"wid": "1426", "formWid": formWid, "fieldType": 2, "title": "本人是否接触过武汉（归来）人员", "description": "",
+                  {"wid": form[0]['wid'], "formWid": formWid, "fieldType": 2, "title": "本人是否接触过武汉（归来）人员",
+                   "description": "",
                    "minLength": 0, "sort": "1", "maxLength": null, "isRequired": 1, "imageCount": null,
                    "hasOtherItems": 0, "colName": "field001", "value": "否", "fieldItems": [
-                      {"itemWid": "3324", "content": "否", "isOtherItems": 0, "contendExtend": "", "isSelected": null}]},
-                  {"wid": "1427", "formWid": formWid, "fieldType": 2, "title": "本人是否接触过新型冠状病毒患者", "description": "",
+                      {"itemWid": form[0]['fieldItems'][1]['itemWid'], "content": "否", "isOtherItems": 0,
+                       "contendExtend": "", "isSelected": null}]},
+                  {"wid": form[1]['wid'], "formWid": formWid, "fieldType": 2, "title": "本人是否接触过新型冠状病毒患者",
+                   "description": "",
                    "minLength": 0, "sort": "2", "maxLength": null, "isRequired": 1, "imageCount": null,
                    "hasOtherItems": 0, "colName": "field002", "value": "否", "fieldItems": [
-                      {"itemWid": "3326", "content": "否", "isOtherItems": 0, "contendExtend": "",
+                      {"itemWid": form[1]['fieldItems'][1]['itemWid'], "content": "否", "isOtherItems": 0,
+                       "contendExtend": "",
                        "isSelected": null}]},
-                  {"wid": "1428", "formWid": formWid, "fieldType": 2, "title": "本人是否有新型冠状病毒类似病状", "description": "",
+                  {"wid": form[2]['wid'], "formWid": formWid, "fieldType": 2, "title": "本人是否有新型冠状病毒类似病状",
+                   "description": "",
                    "minLength": 0, "sort": "3", "maxLength": null, "isRequired": 1, "imageCount": null,
                    "hasOtherItems": 0, "colName": "field003", "value": "否", "fieldItems": [
-                      {"itemWid": "3328", "content": "否", "isOtherItems": 0, "contendExtend": "",
+                      {"itemWid": form[2]['fieldItems'][1]['itemWid'], "content": "否", "isOtherItems": 0,
+                       "contendExtend": "",
                        "isSelected": null}]},
-                  {"wid": "1429", "formWid": formWid, "fieldType": 2, "title": "本人隔离方式", "description": "",
+                  {"wid": form[3]['wid'], "formWid": formWid, "fieldType": 2, "title": "本人隔离方式", "description": "",
                    "minLength": 0, "sort": "4", "maxLength": null, "isRequired": 1, "imageCount": null,
                    "hasOtherItems": 0, "colName": "field004", "value": "家庭自我隔离", "fieldItems": [
-                      {"itemWid": "3329", "content": "家庭自我隔离", "isOtherItems": 0, "contendExtend": "",
+                      {"itemWid": form[3]['fieldItems'][0]['itemWid'], "content": "家庭自我隔离", "isOtherItems": 0,
+                       "contendExtend": "",
                        "isSelected": null}]},
-                  {"wid": "1430", "formWid": formWid, "fieldType": 2, "title": "本人身体状况", "description": "",
+                  {"wid": form[4]['wid'], "formWid": formWid, "fieldType": 2, "title": "本人身体状况", "description": "",
                    "minLength": 0, "sort": "5", "maxLength": null, "isRequired": 1, "imageCount": null,
                    "hasOtherItems": 0, "colName": "field005", "value": "身体健康", "fieldItems": [
-                      {"itemWid": "3332", "content": "身体健康", "isOtherItems": 0, "contendExtend": "",
+                      {"itemWid": form[4]['fieldItems'][0]['itemWid'], "content": "身体健康", "isOtherItems": 0,
+                       "contendExtend": "",
                        "isSelected": null}]},
-                  {"wid": "1431", "formWid": formWid, "fieldType": 2, "title": "共同居住家属情况", "description": "",
+                  {"wid": form[5]['wid'], "formWid": formWid, "fieldType": 2, "title": "共同居住家属情况", "description": "",
                    "minLength": 0, "sort": "6", "maxLength": null, "isRequired": 1, "imageCount": null,
                    "hasOtherItems": 0, "colName": "field006", "value": "正常", "fieldItems": [
-                      {"itemWid": "3335", "content": "正常", "isOtherItems": 0, "contendExtend": "",
+                      {"itemWid": form[5]['fieldItems'][0]['itemWid'], "content": "正常", "isOtherItems": 0,
+                       "contendExtend": "",
                        "isSelected": null}]},
-                  {"wid": "1432", "formWid": formWid, "fieldType": 1, "title": "共同居住家属异常情况描述",
+                  {"wid": form[6]['wid'], "formWid": formWid, "fieldType": 1, "title": "共同居住家属异常情况描述",
                    "description": "共同居住家属情况为异常时填写。", "minLength": 1, "sort": "7", "maxLength": 300,
                    "isRequired": 0, "imageCount": null, "hasOtherItems": 0, "colName": "field007", "value": "",
-                   "fieldItems": []}, {"wid": "1433", "formWid": formWid, "fieldType": 1, "title": "医学隔离地点",
-                                       "description": "本人隔离方式为“医学隔离”的填写", "minLength": 1, "sort": "8",
-                                       "maxLength": 300, "isRequired": 0, "imageCount": null, "hasOtherItems": 0,
-                                       "colName": "field008", "value": "", "fieldItems": []},
-                  {"wid": "1434", "formWid": formWid, "fieldType": 1, "title": "医学隔离开始时间",
+                   "fieldItems": []},
+                  {"wid": form[7]['wid'], "formWid": formWid, "fieldType": 1, "title": "医学隔离地点",
+                   "description": "本人隔离方式为“医学隔离”的填写", "minLength": 1, "sort": "8",
+                   "maxLength": 300, "isRequired": 0, "imageCount": null, "hasOtherItems": 0,
+                   "colName": "field008", "value": "", "fieldItems": []},
+                  {"wid": form[8]['wid'], "formWid": formWid, "fieldType": 1, "title": "医学隔离开始时间",
                    "description": "本人隔离方式为“医学隔离”的填写", "minLength": 1, "sort": "9", "maxLength": 300,
                    "isRequired": 0, "imageCount": -1, "hasOtherItems": 0, "colName": "field009", "value": "",
                    "fieldItems": [], "date": "", "time": ""},
-                  {"wid": "1435", "formWid": formWid, "fieldType": 1, "title": "疑似/确诊为新型冠状病毒感染时间",
+                  {"wid": form[9]['wid'], "formWid": formWid, "fieldType": 1, "title": "疑似/确诊为新型冠状病毒感染时间",
                    "description": "本人身体状况为“疑似新型冠状病毒感染”或“确诊新型冠状病毒感染”的填写", "minLength": 1, "sort": "10",
                    "maxLength": 300, "isRequired": 0, "imageCount": -1, "hasOtherItems": 0, "colName": "field010",
                    "value": "", "fieldItems": [], "date": "", "time": ""},
-                  {"wid": "1436", "formWid": formWid, "fieldType": 1, "title": "本人身份证号",
+                  {"wid": moreForm[0]['wid'], "formWid": formWid, "fieldType": 1, "title": "本人身份证号",
                    "description": "本人身体状况为“疑似新型冠状病毒感染”或“确诊新型冠状病毒感染”的填写", "minLength": 1, "sort": "11",
                    "maxLength": 300, "isRequired": 0, "imageCount": null, "hasOtherItems": 0,
                    "colName": "field011", "value": "", "fieldItems": []},
-                  {"wid": "1437", "formWid": formWid, "fieldType": 1, "title": "本人病情描述",
+                  {"wid": moreForm[1]['wid'], "formWid": formWid, "fieldType": 1, "title": "本人病情描述",
                    "description": "本人身体状况为“疑似新型冠状病毒感染”或“确诊新型冠状病毒感染”的填写", "minLength": 1, "sort": "12",
                    "maxLength": 300, "isRequired": 0, "imageCount": null, "hasOtherItems": 0,
                    "colName": "field012", "value": "", "fieldItems": []},
-                  {"wid": "1438", "formWid": formWid, "fieldType": 1, "title": "备注", "description": "需要特别说明的情况",
+                  {"wid": moreForm[2]['wid'], "formWid": formWid, "fieldType": 1, "title": "备注",
+                   "description": "需要特别说明的情况",
                    "minLength": 1, "sort": "13", "maxLength": 300, "isRequired": 0, "imageCount": null,
                    "hasOtherItems": 0, "colName": "field013", "value": "", "fieldItems": []}]}
-    # printa(params)
+
+    # printa(params['form'])
+
     r = requests.post("http://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/submitForm",
                       headers=headers, cookies=cookies, data=json.dumps(params))
     msg = r.json()['message']
