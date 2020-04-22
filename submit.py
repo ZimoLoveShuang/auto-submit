@@ -14,27 +14,46 @@ def log(content):
 
 # 读取配置
 def getConfig(file='config.ini'):
-    config = configparser.ConfigParser()
+    config = configparser.RawConfigParser()
     config.read(file, encoding='utf-8')
+    # 个人服务器开放的API接口，目前支持几乎所有金智教务系统的模拟登陆，如果你发现不支持你的学校，欢迎和我联系，QQ：461009747
+    login_api = config['login']['login_api']
 
-    login_url = config['login']['url']
-    xh = config['user']['xh']
-    pwd = config['user']['pwd']
+    # 针对每个学校不同的教务系统认证地址进行配置，服务器端默认设置，不写是对应宜宾学院智慧校园的教务系统认证
+    # 登陆页地址 类似这样 http://authserver.swun.edu.cn/authserver/login
+    login_url = config['jinzhi']['login_url']
+    # 是否需要验证码接口地址 类似这样 http://authserver.swun.edu.cn/authserver/needCaptcha.html
+    needcaptcha_url = config['jinzhi']['needcaptcha_url']
+    # 验证码接口 类似这样 http://authserver.swun.edu.cn/authserver/captcha.html
+    captcha_url = config['jinzhi']['captcha_url']
+
+    username = config['user']['username']
+    password = config['user']['password']
     address = config['user']['address']
-    return {"login_url": login_url, "xh": xh, "pwd": pwd, "address": address}
+    return {
+        'login_api': login_api,
+        'login_url': login_url,
+        'needcaptcha_url': needcaptcha_url,
+        'captcha_url': captcha_url,
+        'username': username,
+        'password': password,
+        'address': address
+    }
 
 
 # 登陆并获取cookies
 def getCookies(config):
     params = {
-        'url': 'http://authserver.yibinu.edu.cn/authserver/login?service=https%3A%2F%2Fyibinu.cpdaily.com%2Fportal%2Flogin',
-        'xh': config['xh'],
-        'pwd': config['pwd']
+        'login_url': config['login_url'],
+        'needcaptcha_url': config['needcaptcha_url'],
+        'captcha_url': config['captcha_url'],
+        'username': config['username'],
+        'password': config['password']
     }
 
     cookies = {}
-    # 借助上一个项目开放出来的登陆API，此API只适用于宜宾学院
-    res = requests.post(config['login_url'], params)
+    # 借助上一个项目开放出来的登陆API，模拟登陆
+    res = requests.post(config['login_api'], params)
 
     if str(res.json()['cookies']) == 'None':
         return None
@@ -65,7 +84,6 @@ def queryForm(cookies):
     }
 
     res = requests.post(queryCollectWidUrl, headers=headers, cookies=cookies, data=json.dumps(params))
-
     if len(res.json()['datas']['rows']) < 1:
         return None
 
