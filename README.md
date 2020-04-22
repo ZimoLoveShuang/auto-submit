@@ -35,7 +35,7 @@
 3. needcaptcha_url：金智教务系统是否需要验证码接口的地址 类似这样 `http://authserver.swun.edu.cn/authserver/needCaptcha.html`
 4. captcha_url: 金智教务系统是否需要验证码接口地址 类似这样 `http://authserver.swun.edu.cn/authserver/needCaptcha.html`
 5. 以上三个参数，宜宾学院学子二次开发时可以不用考虑，不用提交，后台默认
-6. 以上三个参数，均只需要基础的地址即可，不要**画蛇添足增加参数**
+6. 以上三个参数，除了login_url之外，均只需要基础的地址即可，不要**画蛇添足增加参数**
 7. 登陆API共有五个参数，除了上面三个。另外两个是username（学号）和password（密码）
 8. 关于开源登陆模块，等我忙完这段时间吧
 9. 服务器是阿里云学生机，大家手下留情，不要搞宕机了
