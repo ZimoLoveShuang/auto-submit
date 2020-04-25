@@ -121,42 +121,33 @@ config = configparser.RawConfigParser()
 config.read('config.ini', encoding='utf-8')
 
 
-def main():
-    while True:
-        log('脚本开始执行。。。')
-        cookies = getCookies()
-        if str(cookies) != 'None':
-            log('模拟登陆成功。。。')
-            log('正在查询最新待填写问卷。。。')
-            params = queryForm(cookies)
-            if str(params) == 'None':
-                log('获取最新待填写问卷失败，可能是辅导员还没有发布。。。')
-                log('无需重启脚本，1小时后，脚本将自动重新尝试。。。')
-                time.sleep(60 * 60 * 1)
-                continue
-            log('查询最新待填写问卷成功。。。')
-            log('正在自动填写问卷。。。')
-            form = fillForm(params['form'])
-            log('填写问卷成功。。。')
-            log('正在自动提交。。。')
-            msg = submitForm(params['formWid'], config['user']['address'], params['collectWid'],
-                             params['schoolTaskWid'], form,
-                             cookies)
-            if msg == 'SUCCESS':
-                log('自动提交成功！24小时后，脚本将再次自动提交。。。')
-                time.sleep(24 * 60 * 60)
-            elif msg == '该收集已填写无需再次填写':
-                log('今日已提交！24小时后，脚本将再次自动提交。。。')
-                time.sleep(24 * 60 * 60)
-            else:
-                log('自动提交失败。。。')
-                log('错误是' + msg)
-                exit(-1)
+def main_handler(event, context):
+    log('脚本开始执行。。。')
+    cookies = getCookies()
+    if str(cookies) != 'None':
+        log('模拟登陆成功。。。')
+        log('正在查询最新待填写问卷。。。')
+        params = queryForm(cookies)
+        if str(params) == 'None':
+            log('获取最新待填写问卷失败，可能是辅导员还没有发布。。。')
+            return "auto submit fail. details reason see logs on console"
+        log('查询最新待填写问卷成功。。。')
+        log('正在自动填写问卷。。。')
+        form = fillForm(params['form'])
+        log('填写问卷成功。。。')
+        log('正在自动提交。。。')
+        msg = submitForm(params['formWid'], config['address'], params['collectWid'], params['schoolTaskWid'], form,
+                         cookies)
+        if msg == 'SUCCESS':
+            log('自动提交成功！')
+        elif msg == '该收集已填写无需再次填写':
+            log('今日已提交！')
         else:
-            log('模拟登陆失败。。。')
-            log('原因可能是学号或密码错误，请检查配置后，重启脚本。。。')
-            exit(-1)
-
-
-if __name__ == '__main__':
-    main()
+            log('自动提交失败。。。')
+            log('错误是' + msg)
+            return "auto submit fail. details reason see logs on console"
+    else:
+        log('模拟登陆失败。。。')
+        log('原因可能是学号或密码错误，请检查配置后，重启脚本。。。')
+        return "auto submit fail. details reason see logs on console"
+    return "auto submit success."
