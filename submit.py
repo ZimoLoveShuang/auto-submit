@@ -79,13 +79,23 @@ def fillForm(form):
     cnt = 0
     index = 1
     for item in form:
+        # 必填项
         if item['isRequired'] == 1:
-            fieldItems = item['fieldItems']
-            for i in range(0, len(fieldItems))[::-1]:
-                if fieldItems[i]['content'] == cpdaily['default_%d' % index]:
-                    form[cnt]['value'] = fieldItems[i]['content']
-                else:
-                    del fieldItems[i]
+            # 文本
+            if item['fieldType'] == 1:
+                form[cnt]['value'] = cpdaily['default_%d' % index]
+            # 单选
+            elif item['fieldType'] == 2:
+                fieldItems = item['fieldItems']
+                for i in range(0, len(fieldItems))[::-1]:
+                    if fieldItems[i]['content'] == cpdaily['default_%d' % index]:
+                        form[cnt]['value'] = fieldItems[i]['content']
+                    else:
+                        del fieldItems[i]
+            # 其他类型，目前暂时不知道该如何填，所以退出
+            else:
+                log('cpdaily表单出现了未知填写类型的问题，待优化 ' + str(item))
+                exit(-1)
             cnt += 1
             index += 1
     if cnt != index - 1:
