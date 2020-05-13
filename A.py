@@ -17,7 +17,7 @@ def getCookies():
         'username': 'test',
         'password': 'test'
     }
-    res = requests.post('http://localhost:8080/yibinu-score-crawler/api/login', params)
+    res = requests.post('http://www.zimo.wiki:8080/wisedu-unified-login-api-v1.0/api/login', params)
     print(res.text)
 
 
