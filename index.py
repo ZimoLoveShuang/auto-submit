@@ -3,12 +3,14 @@ import configparser
 import sys
 import requests
 import json
-import time
+from datetime import datetime, timedelta, timezone
 
 
-# 获取当前时间，并格式化
+# 获取当前utc时间，并格式化为北京时间
 def getTimeStr():
-    return str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+    utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
+    bj_dt = utc_dt.astimezone(timezone(timedelta(hours=8)))
+    return bj_dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
 # 输出调试信息，并及时刷新缓冲区

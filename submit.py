@@ -43,5 +43,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # 下面的代码测试用
+    # 下面的代码用于配合Windows计划任务使用
     # app.main_handler({}, {})
