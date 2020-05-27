@@ -8,6 +8,10 @@
 - A.py 测试模拟登陆API是否适用于xx学校的py脚本
 
 # 使用
+
+## 宜宾学院的同学
+
+### 方式一：本地执行
 1. clone 或者 下载 此仓库到本地
     ```shell script
     git clone https://github.com/ZimoLoveShuang/auto-submit.git
@@ -21,8 +25,15 @@
     ```shell script
     python submit.py
     ```
+5. 可配合Windows计划任务食用，修改submit.py中的注释即可
+    ```python
+    if __name__ == '__main__':
+        # main()
+        # 下面的代码测试用
+        app.main_handler({}, {})
+    ```
    
-# 配合腾讯云函数食用
+### 方式二：配合腾讯云函数食用
 1. clone 或者 下载 此仓库到本地
     ```shell script
     git clone https://github.com/ZimoLoveShuang/auto-submit.git
@@ -38,6 +49,12 @@
 7. enjoy it!
 8. 一些小问题：腾讯云函数的cron表达式执行的时间是utc时间，但是承载的服务器的时间不是utc时间，于是你会发现定时执行是正确的，但是打印的log会差8小时，并不影响使用，强迫症患者请绕道
 
+## 其他学校的同学
+
+1. 抓包，抓到`*.cpdaily.com`和`登录地址`就可以了
+2. 配置config.ini
+3. 参考宜宾学院同学的两种方式使用
+
 # 说明
 1. 此项目默认配置适用于宜宾学院学子，其他学校，可以抓包后配置config.ini后食用
 2. 此项目依赖python3.8运行环境，如没有，自行安装
@@ -50,6 +67,7 @@
 2. 获取表单
 3. 填充表单
 4. 提交表单
+5. 推送消息
 
 # 关于模拟登陆API的说明
 

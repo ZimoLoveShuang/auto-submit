@@ -6,9 +6,14 @@ import json
 import time
 
 
+# 获取当前时间，并格式化
+def getTimeStr():
+    return str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+
+
 # 输出调试信息，并及时刷新缓冲区
 def log(content):
-    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ' ' + str(content))
+    print(getTimeStr() + ' ' + str(content))
     sys.stdout.flush()
 
 
@@ -25,12 +30,12 @@ def getCookies():
     cookies = {}
     # 借助上一个项目开放出来的登陆API，模拟登陆
     res = requests.post(config['login']['login_api'], params)
-
-    if str(res.json()['cookies']) == 'None':
+    cookieStr = str(res.json()['cookies'])
+    if cookieStr == 'None':
         return None
 
     # 解析cookie
-    for line in res.json()['cookies'].split(';'):
+    for line in cookieStr.split(';'):
         name, value = line.strip().split('=', 1)
         cookies[name] = value
     return cookies
@@ -49,6 +54,7 @@ def queryForm(cookies):
     }
 
     params = {
+        # pageSize大于等于必填项的数量即可
         'pageSize': 6,
         'pageNumber': 1
     }
@@ -75,32 +81,14 @@ def queryForm(cookies):
 
 # 填写form
 def fillForm(form):
-    cpdaily = dict(config['cpdaily'])
-    cnt = 0
-    index = 1
-    for item in form:
-        # 必填项
-        if item['isRequired'] == 1:
-            # 文本
-            if item['fieldType'] == 1:
-                form[cnt]['value'] = cpdaily['default_%d' % index]
-            # 单选
-            elif item['fieldType'] == 2:
-                fieldItems = item['fieldItems']
-                for i in range(0, len(fieldItems))[::-1]:
-                    if fieldItems[i]['content'] == cpdaily['default_%d' % index]:
-                        form[cnt]['value'] = fieldItems[i]['content']
-                    else:
-                        del fieldItems[i]
-            # 其他类型，目前暂时不知道该如何填，所以退出
-            else:
-                log('cpdaily表单出现了未知填写类型的问题，待优化 ' + str(item))
-                exit(-1)
-            cnt += 1
-            index += 1
-    if cnt != index - 1:
-        log('cpdaily表单默认值配置不正确，请检查。。。')
-        exit(-1)
+    for formItem in form:
+        if formItem['isRequired'] == 1:
+            fieldItems = formItem['fieldItems']
+            for fieldItem in fieldItems:
+                if fieldItem['isSelected'] == 1:
+                    formItem['value'] = fieldItem['content']
+                else:
+                    fieldItems.remove(fieldItem)
     return form
 
 
@@ -112,7 +100,8 @@ def submitForm(formWid, address, collectWid, schoolTaskWid, form, cookies):
         'extension': '1',
         'Cpdaily-Extension': '1wAXD2TvR72sQ8u+0Dw8Dr1Qo1jhbem8Nr+LOE6xdiqxKKuj5sXbDTrOWcaf v1X35UtZdUfxokyuIKD4mPPw5LwwsQXbVZ0Q+sXnuKEpPOtk2KDzQoQ89KVs gslxPICKmyfvEpl58eloAZSZpaLc3ifgciGw+PIdB6vOsm2H6KSbwD8FpjY3 3Tprn2s5jeHOp/3GcSdmiFLYwYXjBt7pwgd/ERR3HiBfCgGGTclquQz+tgjJ PdnDjA==',
         'Content-Type': 'application/json; charset=utf-8',
-        'Host': 'yibinu.cpdaily.com',
+        # 请注意这个应该和配置文件中的host保持一致
+        'Host': config['cpdaily_api']['host'],
         'Connection': 'Keep-Alive',
         'Accept-Encoding': 'gzip'
     }
@@ -140,13 +129,14 @@ def main_handler(event, context):
         params = queryForm(cookies)
         if str(params) == 'None':
             log('获取最新待填写问卷失败，可能是辅导员还没有发布。。。')
-            return "auto submit fail. details reason see logs on console"
+            exit(-1)
         log('查询最新待填写问卷成功。。。')
         log('正在自动填写问卷。。。')
         form = fillForm(params['form'])
         log('填写问卷成功。。。')
         log('正在自动提交。。。')
-        msg = submitForm(params['formWid'], config['address'], params['collectWid'], params['schoolTaskWid'], form,
+        msg = submitForm(params['formWid'], config['user']['address'], params['collectWid'], params['schoolTaskWid'],
+                         form,
                          cookies)
         if msg == 'SUCCESS':
             log('自动提交成功！')
@@ -155,9 +145,23 @@ def main_handler(event, context):
         else:
             log('自动提交失败。。。')
             log('错误是' + msg)
-            return "auto submit fail. details reason see logs on console"
+            exit(-1)
     else:
         log('模拟登陆失败。。。')
         log('原因可能是学号或密码错误，请检查配置后，重启脚本。。。')
-        return "auto submit fail. details reason see logs on console"
+        exit(-1)
+    sendMessage()
     return "auto submit success."
+
+
+def sendMessage():
+    send = config['user']['send']
+    if send != '':
+        log('正在发送通知。。。')
+        res = requests.post(url=send, data={'text': '今日校园疫情上报自动提交结果通知', 'desp': getTimeStr() + ' 自动提交成功'})
+        errmsg = res.json()['errmsg']
+        if errmsg == 'success':
+            log('发送通知成功。。。')
+        else:
+            log('发送通知失败。。。')
+            log(res.json())
