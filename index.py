@@ -34,6 +34,7 @@ def getCookies():
     res = requests.post(config['login']['login_api'], params)
     cookieStr = str(res.json()['cookies'])
     if cookieStr == 'None':
+        log(res.json())
         return None
 
     # 解析cookie
