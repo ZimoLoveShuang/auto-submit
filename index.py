@@ -160,11 +160,12 @@ def main_handler(event, context):
 def sendMessage():
     send = config['user']['send']
     if send != '':
-        log('正在发送通知。。。')
-        res = requests.post(url=send, data={'text': '今日校园疫情上报自动提交结果通知', 'desp': getTimeStr() + ' 自动提交成功'})
-        errmsg = res.json()['errmsg']
-        if errmsg == 'success':
-            log('发送通知成功。。。')
+        log('正在发送邮件通知。。。')
+        res = requests.post(url='http://www.zimo.wiki:8080/mail-sender/sendMail',
+                            data={'title': '今日校园疫情上报自动提交结果通知', 'content': getTimeStr() + ' 自动提交成功', 'to': send})
+        code = res.json()['code']
+        if code == 0:
+            log('发送邮件通知成功。。。')
         else:
-            log('发送通知失败。。。')
+            log('发送邮件通知失败。。。')
             log(res.json())
