@@ -141,7 +141,7 @@ def main_handler(event, context):
             log('当前用户：' + str(user['user']['username']))
             log('脚本开始执行。。。')
             log('开始模拟登陆。。。')
-            cookies = getCookies(config['users'][0])
+            cookies = getCookies(user)
             if str(cookies) != 'None':
                 log('模拟登陆成功。。。')
                 log('正在查询最新待填写问卷。。。')
