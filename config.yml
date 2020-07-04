@@ -2,17 +2,11 @@
 login:
   #开放的模拟登陆api服务器地址
   api: "http://www.zimo.wiki:8080/wisedu-unified-login-api-v1.0/api/login"
-  #使用api的所需要的参数
-  params:
-    #金智教务系统统一认证地址，service参数的值表示认证成功后跳转地址
-    login-url: "http://authserver.yibinu.edu.cn/authserver/login?service=https%3A%2F%2Fyibinu.cpdaily.com%2Fportal%2Flogin"
-    #保证用户名（学号或者工号）和密码正确可不配置下面两项，下面两项的功能是用于验证码识别
-    needcaptcha-url:
-    captcha-url:
 #用户组配置
 users:
   #单个用户配置
   - user:
+      #username 学号或者工号
       #username 学号或者工号
       username: 161105024
       #password 密码
@@ -21,6 +15,8 @@ users:
       address: 中国四川省成都市金牛区一环路北1段-129号-附9号
       #email 接受通知消息的邮箱
       email: 461009747@qq.com
+      #school 学校全称
+      school: 宜宾学院
   #多用户配置，将下面的注释去掉即可
 #  - user:
 #      #username 学号或者工号
@@ -31,27 +27,9 @@ users:
 #      address: 中国四川省成都市金牛区一环路北1段-129号-附9号
 #      #email 接受通知消息的邮箱
 #      email: 461009747@qq.com
+#      school: 宜宾学院
 #今日校园相关配置
 cpdaily:
-  api:
-    host: yibinu.cpdaily.com
-    #查询每天的collectWid的接口
-    query-collect-wid-api:
-      url: "https://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/queryCollectorProcessingList"
-      params: {
-        #pageSize大于等于必填项的数量就可以了
-        'pageSize': 6,
-        'pageNumber': 1
-      }
-    #查询每个收集信息详情的接口
-    detail-collector:
-      url: "https://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/detailCollector"
-    #查询每个收集信息详情对应的表单项接口
-    get-form-fields:
-      url: "https://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/getFormFields"
-    #提交表单的接口
-    submit-form:
-      url: "https://yibinu.cpdaily.com/wec-counselor-collector-apps/stu/collector/submitForm"
   #表单组默认选项配置
   defaults:
     #表单默认选项配置，按顺序
