@@ -39,6 +39,30 @@
 
 使用方式同宜宾学院同学
 
+#### 目前通过测试的学校
+
+<table>
+    <thead>
+        <tr>
+            <td>学校名称</td>
+            <td>学校英文简称</td>
+            <td>加入今日校园的方式</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>宜宾学院</td>
+            <td>yibinu</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>惠州市技师学院</td>
+            <td>hzti</td>
+            <td>CLOUD</td>
+        </tr>
+    </tbody>
+</table>
+
 # 说明
 
 1. 此项目默认配置适用于宜宾学院学子，也欢迎其他学校同学提交适合自己学校的配置，命名为`config_学校英文简称.yml`，示例：`config_hzti.yml`，hzti是惠州市技师学院的英文简称，不需要<u>抓包</u>
