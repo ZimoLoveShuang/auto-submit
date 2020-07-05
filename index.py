@@ -19,6 +19,8 @@ def getYmlConfig(yaml_file='config.yml'):
 
 # 全局配置
 config = getYmlConfig()
+# 其他学校学子请注意修改下面这一行
+# config = getYmlConfig(yaml_file='config_hzti.yml')
 
 
 # 获取今日校园api
@@ -185,10 +187,9 @@ def fillForm(session, form, host):
 
 # 上传图片到阿里云oss
 def uploadPicture(session, image, host):
-    url = 'https://{host}/wec-counselor-sign-apps/stu/sign/getStsAccess'.format(host=host)
+    url = 'https://{host}/wec-counselor-collector-apps/stu/collector/getStsAccess'.format(host=host)
     res = session.post(url=url, headers={'content-type': 'application/json'}, data=json.dumps({}))
     datas = res.json().get('datas')
-    # 所需信息
     fileName = datas.get('fileName')
     accessKeyId = datas.get('accessKeyId')
     accessSecret = datas.get('accessKeySecret')
@@ -206,7 +207,7 @@ def uploadPicture(session, image, host):
 
 # 获取图片上传位置
 def getPictureUrl(session, fileName, host):
-    url = 'https://{host}/wec-counselor-sign-apps/stu/sign/previewAttachment'.format(host=host)
+    url = 'https://{host}/wec-counselor-collector-apps/stu/collector/previewAttachment'.format(host=host)
     data = {
         'ossKey': fileName
     }
