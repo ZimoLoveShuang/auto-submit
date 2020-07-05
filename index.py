@@ -175,7 +175,7 @@ def fillForm(session, form, host):
                             flag = False
                     if flag:
                         del fieldItems[i]
-            # 图片需要上传图片到阿里云oss
+            # 图片需要上传到阿里云oss
             if formItem['fieldType'] == 4:
                 fileName = uploadPicture(session, default['value'], host)
                 formItem['value'] = getPictureUrl(session, fileName, host)
