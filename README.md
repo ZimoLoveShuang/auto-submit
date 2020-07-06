@@ -47,12 +47,12 @@
 
 #### 目前通过测试的学校
 
-<table>
+<table align="center">
     <thead>
         <tr>
-            <td>学校名称</td>
-            <td>学校英文简称</td>
-            <td>加入今日校园的方式</td>
+            <th>学校名称</th>
+            <th>学校英文简称</th>
+            <th>加入今日校园的方式</th>
         </tr>
     </thead>
     <tbody>
@@ -62,21 +62,36 @@
             <td>NOTCLOUD</td>
         </tr>
         <tr>
+            <td>中国矿业大学</td>
+            <td>cumt</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
             <td>惠州市技师学院</td>
             <td>hzti</td>
             <td>CLOUD</td>
+        </tr>
+        <tr>
+            <td>西南大学</td>
+            <td>swu</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>长江师范学院</td>
+            <td>yznu</td>
+            <td>NOTCLOUD</td>
         </tr>
     </tbody>
 </table>
 
 #### 目前不支持的学校
 
-<table>
+<table align="center">
     <thead>
         <tr>
-            <td>学校名称</td>
-            <td>不支持原因</td>
-            <td>加入今日校园的方式</td>
+            <th>学校名称</th>
+            <th>不支持原因</th>
+            <th>加入今日校园的方式</th>
         </tr>
     </thead>
     <tbody>
@@ -87,6 +102,8 @@
         </tr>
     </tbody>
 </table>
+
+##### 正在考虑写一个模拟原生登陆cloud和notcloud的脚本
 
 # 说明
 
@@ -153,6 +170,10 @@
 - 2020-03-27 更新提交的表单项，适应金智更新后的接口验证
 - 2020-03-18 抓到获取wid的接口，脚本不再暴力尝试，支持提交位置信息
 - 2020-03-14 发布暴力尝试脚本
+
+# 致谢
+
+@suqir
 
 # 捐赠
 <table>
