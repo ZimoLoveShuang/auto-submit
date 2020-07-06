@@ -81,6 +81,11 @@
             <td>yznu</td>
             <td>NOTCLOUD</td>
         </tr>
+        <tr>
+            <td>新乡医学院</td>
+            <td>xxmu</td>
+            <td>CLOUD</td>
+        </tr>
     </tbody>
 </table>
 
@@ -109,7 +114,7 @@
 
 1. 此项目**默认配置适用于宜宾学院学子，也欢迎其他学校同学提交适合自己学校的配置**，命名为`config_学校英文简称.yml`，示例：`config_hzti.yml`，hzti是惠州市技师学院的英文简称，不需要<s>抓包</s>
 2. 此项目依赖`python3.8`运行环境，如没有，自行安装
-3. 此项目依赖`PyYAML oss2 urllib requests json `等python库，如没有，自行安装，**如遇到腾讯云函数运行错误，需要先在centos7下执行下面的命令再选择文件夹上传**
+3. 此项目依赖`PyYAML oss2 urllib requests json `等python库，如没有，自行安装，**参考命令**
     ```shell script
     pip install -r requirement.txt -t . -i https://mirrors.aliyun.com/pypi/simple
     ```
@@ -142,8 +147,8 @@
 ![意外发现：Cpdaily-Extension](screenshots/13d573c2.png)
 ![意外发现：Cpdaily-Extension](screenshots/e5f77237.png)
 2. 关于抓包：今日校园APP某些接口启动了`ssl pinning`机制，一般的方法无法抓包
-3. 提供一个参考的破解`ssl pinning`机制的方法：使用`逍遥安卓4.4.4`模拟器，配合`xposed框架`，使用`justtrustme模块`，`hook`掉验证证书的函数即可抓包，更详细的说明可参考我的博文[今日校园抓包方案探索过程记录](https://blog.zimo.wiki/posts/d61cc8e9/)
-4. 逆向apk亦可破解`ssl pinning`和`sign`算法，意外发现是今日校园`v8.0.8`及之前的版本没有加固，可参考我的博文[今日校园逆向过程记录](https://blog.zimo.wiki/posts/7cd24e9c/)
+3. 提供一个参考的 pj `ssl pinning`机制的方法：使用`逍遥安卓4.4.4`模拟器，配合`xposed框架`，使用`justtrustme模块`，`hook`掉验证证书的函数即可抓包，更详细的说明可参考我的博文[今日校园抓包方案探索过程记录](https://blog.zimo.wiki/posts/d61cc8e9/)
+4. 逆向apk亦可 pj `ssl pinning`和`sign`算法，意外发现是今日校园`v8.0.8`及之前的版本没有加固，可参考我的博文[今日校园逆向过程记录](https://blog.zimo.wiki/posts/7cd24e9c/)
 5. 此项目为自动提交疫情收集表，自动签到请参考另一个开源项目[auto-sign](https://github.com/ZimoLoveShuang/auto-sign)
 
 # 封禁白嫖说明

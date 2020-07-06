@@ -7,7 +7,6 @@ users:
   #单个用户配置
   - user:
       #username 学号或者工号
-      #username 学号或者工号
       username: 161105024
       #password 密码
       password: 161105024
@@ -34,7 +33,7 @@ cpdaily:
   defaults:
     #表单默认选项配置，按顺序
     - default:
-        #表单项类型，对应今日校园接口返回的fieldType字段，2代表单选，1代表文本
+        #表单项类型，对应今日校园接口返回的fieldType字段，1代表文本，2代表单选，3代表多选，4代表图片
         type: 2
         #表单项标题
         title: 本人是否接触过武汉（归来）人员

@@ -60,6 +60,7 @@ def getCpdailyApis(user):
     if flag:
         log(user['school'] + ' 未加入今日校园或者学校全称错误')
         exit(-1)
+    log(apis)
     return apis
 
 
@@ -93,7 +94,9 @@ def getSession(user, loginUrl):
         # 借助上一个项目开放出来的登陆API，模拟登陆
         res = requests.post(config['login']['api'], params)
         cookieStr = str(res.json()['cookies'])
+        log(cookieStr)
         if cookieStr == 'None':
+            log(res.json())
             return None
 
         # 解析cookie
@@ -297,8 +300,8 @@ def main_handler(event, context):
         return 'auto submit success.'
 
 
+# 配合Windows计划任务等使用
 if __name__ == '__main__':
-    # 配合Windows计划任务使用
     print(main_handler({}, {}))
     # for user in config['users']:
     #     log(getCpdailyApis(user))
