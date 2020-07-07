@@ -47,7 +47,7 @@
 
 #### 目前通过测试的学校
 
-<table align="center">
+<table style="text-align: center">
     <thead>
         <tr>
             <th>学校名称</th>
@@ -60,6 +60,11 @@
             <td>宜宾学院</td>
             <td>yibinu</td>
             <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>安徽农业大学经济技术学院</td>
+            <td>jjjs</td>
+            <td>CLOUD</td>
         </tr>
         <tr>
             <td>中国矿业大学</td>
@@ -84,6 +89,11 @@
         <tr>
             <td>新乡医学院</td>
             <td>xxmu</td>
+            <td>CLOUD</td>
+        </tr>
+        <tr>
+            <td>天津天狮学院</td>
+            <td>tianshi</td>
             <td>CLOUD</td>
         </tr>
     </tbody>

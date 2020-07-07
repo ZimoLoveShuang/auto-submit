@@ -10,7 +10,7 @@ users:
       username: 161105024
       #password 密码
       password: 161105024
-      #address 地址
+      #address 地址，定位信息
       address: 中国四川省成都市金牛区一环路北1段-129号-附9号
       #email 接受通知消息的邮箱
       email: 461009747@qq.com
@@ -31,7 +31,7 @@ users:
 cpdaily:
   #表单组默认选项配置
   defaults:
-    #表单默认选项配置，按顺序
+    #表单默认选项配置，按顺序，注意，只有标必填项的才处理
     - default:
         #表单项类型，对应今日校园接口返回的fieldType字段，1代表文本，2代表单选，3代表多选，4代表图片
         type: 2
