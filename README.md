@@ -13,6 +13,7 @@
 - `config.yml` 配置文件
 - `index.py` 完成自动提交的py脚本
 - `A.py` 测试模拟登陆API是否适用于xx学校的py脚本
+- `generate.py` 帮助生成默认项配置的py脚本
 - `requirment.txt` py依赖库以及版本说明文件
 - `dependency.zip` 打包好的云函数依赖库文件
 
@@ -41,13 +42,15 @@
 8. enjoy it!
 9. 也可配合Windows计划任务或者使用linux定时任务，将脚本挂在自己的云服务器上，不会就搜索一下，过程不再赘述
 
+#### 如果你不会配置表单组默认选项配置，请先配置好`user`信息之后执行`generate.py`然后将分割线下的内容复制到配置文件中对应位置
+
 ## 其他学校的同学
 
 使用方式同宜宾学院同学，但请注意修改`index.py`中23行
 
 #### 目前通过测试的学校
 
-<table style="text-align: center">
+<table>
     <thead>
         <tr>
             <th>学校名称</th>
@@ -101,7 +104,7 @@
 
 #### 目前不支持的学校
 
-<table align="center">
+<table>
     <thead>
         <tr>
             <th>学校名称</th>
