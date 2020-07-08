@@ -42,7 +42,7 @@
 8. enjoy it!
 9. 也可配合Windows计划任务或者使用linux定时任务，将脚本挂在自己的云服务器上，不会就搜索一下，过程不再赘述
 
-#### 如果你不会配置表单组默认选项配置，请先配置好`user`信息之后执行`generate.py`然后将分割线下的内容复制到配置文件中对应位置
+#### 如果你不会配置表单组默认选项配置，请先配置好`user`信息之后本地执行`generate.py`然后将分割线下的内容复制到配置文件中对应位置
 
 ## 其他学校的同学
 
@@ -129,7 +129,7 @@
 2. 此项目依赖`python3.8`运行环境，如没有，自行安装
 3. 此项目依赖`PyYAML oss2 urllib requests json `等python库，如没有，自行安装，**参考命令**
     ```shell script
-    pip install -r requirement.txt -t . -i https://mirrors.aliyun.com/pypi/simple
+    pip install -r requirements.txt -t . -i https://mirrors.aliyun.com/pypi/simple
     ```
 4. 此项目依赖上一个爬虫项目[宜宾学院教务系统成绩爬虫](https://github.com/ZimoLoveShuang/yibinu-score-crawler.git)，开放的登陆api
 5. 此项目默认提交全部正常的情况，如果有其他情况，请自行在今日校园app上提交

@@ -9,7 +9,7 @@ def generate():
     apis = app.getCpdailyApis(user)
     session = app.getSession(user, apis['login-url'])
     form = dict(app.queryForm(session, apis))['form']
-    app.log(form)
+    # app.log(form)
     defaults = []
     sort = 1
     for formItem in form:

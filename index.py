@@ -21,6 +21,7 @@ def getYmlConfig(yaml_file='config.yml'):
 config = getYmlConfig()
 # 其他学校学子请注意修改下面这一行
 # config = getYmlConfig(yaml_file='config_hzti.yml')
+# config = getYmlConfig(yaml_file='config_xxmu.yml')
 
 
 # 获取今日校园api
