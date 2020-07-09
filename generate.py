@@ -25,14 +25,14 @@ def generate():
                 fieldItems = formItem['fieldItems']
                 num = 1
                 for fieldItem in fieldItems:
-                    print('%d ' % num + fieldItem['content'])
+                    print('\t%d ' % num + fieldItem['content'])
                     num += 1
                 default['value'] = fieldItems[int(input("请输入序号：")) - 1]['content']
             if default['type'] == 3:
                 fieldItems = formItem['fieldItems']
                 num = 1
                 for fieldItem in fieldItems:
-                    print('%d ' % num + fieldItem['content'])
+                    print('\t%d ' % num + fieldItem['content'])
                     num += 1
                 chooses = list(map(int, input('请输入序号（可输入多个，请用空格隔开）：').split()))
                 default['value'] = ''
