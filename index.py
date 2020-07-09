@@ -22,6 +22,7 @@ config = getYmlConfig()
 # 其他学校学子请注意修改下面这一行
 # config = getYmlConfig(yaml_file='config_hzti.yml')
 # config = getYmlConfig(yaml_file='config_xxmu.yml')
+# config = getYmlConfig(yaml_file='config_henu.yml')
 
 
 # 获取今日校园api
@@ -44,14 +45,13 @@ def getCpdailyApis(user):
             idsUrl = data['idsUrl']
             ampUrl = data['ampUrl']
             ampUrl2 = data['ampUrl2']
-            joinType = data['joinType']
-            if joinType == 'CLOUD':
+            if 'campusphere' in ampUrl or 'cpdaily' in ampUrl:
                 parse = urlparse(ampUrl)
                 host = parse.netloc
                 apis[
                     'login-url'] = idsUrl + '/login?service=' + parse.scheme + r"%3A%2F%2F" + host + r'%2Fportal%2Flogin'
                 apis['host'] = host
-            elif joinType == 'NOTCLOUD':
+            if 'campusphere' in ampUrl2 or 'cpdaily' in ampUrl2:
                 parse = urlparse(ampUrl2)
                 host = parse.netloc
                 apis[
