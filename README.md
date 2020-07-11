@@ -107,24 +107,7 @@
     </tbody>
 </table>
 
-#### 目前不支持的学校
-
-<table>
-    <thead>
-        <tr>
-            <th>学校名称</th>
-            <th>不支持原因</th>
-            <th>加入今日校园的方式</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>福州大学</td>
-            <td>学生账号今日校园云端系统被禁用</td>
-            <td>NOTCLOUD</td>
-        </tr>
-    </tbody>
-</table>
+#### 福州大学的同学自动签到已支持，请看[auto-sign项目](https://github.com/ZimoLoveShuang/auto-sign)
 
 # 说明
 
