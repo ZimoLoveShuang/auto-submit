@@ -18,11 +18,7 @@ def getYmlConfig(yaml_file='config.yml'):
 
 
 # 全局配置
-config = getYmlConfig()
-# 其他学校学子请注意修改下面这一行
-# config = getYmlConfig(yaml_file='config_hzti.yml')
-# config = getYmlConfig(yaml_file='config_xxmu.yml')
-# config = getYmlConfig(yaml_file='config_henu.yml')
+config = getYmlConfig(yaml_file='config.yml')
 
 
 # 获取今日校园api
@@ -155,6 +151,9 @@ def fillForm(session, form, host):
         # 只处理必填项
         if formItem['isRequired'] == 1:
             default = config['cpdaily']['defaults'][sort - 1]['default']
+            if formItem['title'] != default['title']:
+                log('第%d个默认配置不正确，请检查' % sort)
+                exit(-1)
             # 文本直接赋值
             if formItem['fieldType'] == 1:
                 formItem['value'] = default['value']

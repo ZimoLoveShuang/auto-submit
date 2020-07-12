@@ -3,6 +3,7 @@ import index as app
 import yaml
 
 
+# 生成默认配置
 def generate():
     config = app.config
     user = config['users'][0]
@@ -27,7 +28,11 @@ def generate():
                 for fieldItem in fieldItems:
                     print('\t%d ' % num + fieldItem['content'])
                     num += 1
-                default['value'] = fieldItems[int(input("请输入序号：")) - 1]['content']
+                choose = int(input("请输入序号："))
+                if choose < 1 or choose > num:
+                    print('输入错误，请重新执行此脚本')
+                    exit(-1)
+                default['value'] = fieldItems[choose - 1]['content']
             if default['type'] == 3:
                 fieldItems = formItem['fieldItems']
                 num = 1
@@ -37,10 +42,14 @@ def generate():
                 chooses = list(map(int, input('请输入序号（可输入多个，请用空格隔开）：').split()))
                 default['value'] = ''
                 for i in range(0, len(chooses)):
+                    choose = chooses[i]
+                    if choose < 1 or choose > num:
+                        print('输入错误，请重新执行此脚本')
+                        exit(-1)
                     if i != len(chooses) - 1:
-                        default['value'] += fieldItems[chooses[i] - 1]['content'] + ','
+                        default['value'] += fieldItems[choose - 1]['content'] + ','
                     else:
-                        default['value'] += fieldItems[chooses[i] - 1]['content']
+                        default['value'] += fieldItems[choose - 1]['content']
             if default['type'] == 4:
                 default['value'] = input("请输入图片名称：")
             one['default'] = default
