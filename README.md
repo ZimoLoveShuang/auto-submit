@@ -149,9 +149,8 @@ config = getYmlConfig(yaml_file='config.yml')
 ![意外发现：Cpdaily-Extension](screenshots/13d573c2.png)
 ![意外发现：Cpdaily-Extension](screenshots/e5f77237.png)
 2. 关于抓包：今日校园APP某些接口启动了`ssl pinning`机制，一般的方法无法抓包
-3. 提供一个参考的 pj `ssl pinning`机制的方法：使用`逍遥安卓4.4.4`模拟器，配合`xposed框架`，使用`justtrustme模块`，`hook`掉验证证书的函数即可抓包，更详细的说明可参考我的博文[今日校园抓包方案探索过程记录](https://blog.zimo.wiki/posts/d61cc8e9/)
-4. 逆向apk亦可 pj `ssl pinning`和`sign`算法，意外发现是今日校园`v8.0.8`及之前的版本没有加固，可参考我的博文[今日校园逆向过程记录](https://blog.zimo.wiki/posts/7cd24e9c/)
-5. 此项目为自动提交疫情收集表，自动签到请参考另一个开源项目[auto-sign](https://github.com/ZimoLoveShuang/auto-sign)
+3. 提供一个参考的 绕过 `ssl pinning`机制的方法：使用`逍遥安卓4.4.4`模拟器，配合`xposed框架`，使用`justtrustme模块`，`hook`掉验证证书的函数即可抓包
+4. 此项目为自动提交疫情收集表，自动签到请参考另一个开源项目[auto-sign](https://github.com/ZimoLoveShuang/auto-sign)
 
 # 封禁白嫖说明
 
