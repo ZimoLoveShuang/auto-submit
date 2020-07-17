@@ -30,7 +30,7 @@ def getCpdailyApis(user):
     for one in schools:
         if one['name'] == user['school']:
             if one['joinType'] == 'NONE':
-                log(user['school'] + ' 未加入今日校园或者学校全称错误')
+                log(user['school'] + ' 未加入今日校园')
                 exit(-1)
             flag = False
             params = {
@@ -53,9 +53,11 @@ def getCpdailyApis(user):
                 apis[
                     'login-url'] = idsUrl + '/login?service=' + parse.scheme + r"%3A%2F%2F" + host + r'%2Fportal%2Flogin'
                 apis['host'] = host
+            res = requests.get(url=apis['login-url'])
+            apis['login-url'] = res.url
             break
     if flag:
-        log(user['school'] + ' 未加入今日校园或者学校全称错误')
+        log(user['school'] + ' 未找到该院校信息，请检查是否是学校全称错误')
         exit(-1)
     log(apis)
     return apis
@@ -76,35 +78,32 @@ def log(content):
 
 # 登陆并返回session
 def getSession(user, loginUrl):
-    try:
-        user = user['user']
-        params = {
-            'login_url': loginUrl,
-            # 保证学工号和密码正确下面两项就不需要配置
-            'needcaptcha_url': '',
-            'captcha_url': '',
-            'username': user['username'],
-            'password': user['password']
-        }
+    user = user['user']
+    params = {
+        'login_url': loginUrl,
+        # 保证学工号和密码正确下面两项就不需要配置
+        'needcaptcha_url': '',
+        'captcha_url': '',
+        'username': user['username'],
+        'password': user['password']
+    }
 
-        cookies = {}
-        # 借助上一个项目开放出来的登陆API，模拟登陆
-        res = requests.post(config['login']['api'], params)
-        cookieStr = str(res.json()['cookies'])
-        log(cookieStr)
-        if cookieStr == 'None':
-            log(res.json())
-            return None
-
-        # 解析cookie
-        for line in cookieStr.split(';'):
-            name, value = line.strip().split('=', 1)
-            cookies[name] = value
-        session = requests.session()
-        session.cookies = requests.utils.cookiejar_from_dict(cookies)
-        return session
-    except:
+    cookies = {}
+    # 借助上一个项目开放出来的登陆API，模拟登陆
+    res = requests.post(config['login']['api'], params)
+    cookieStr = str(res.json()['cookies'])
+    log(cookieStr)
+    if cookieStr == 'None':
+        log(res.json())
         return None
+
+    # 解析cookie
+    for line in cookieStr.split(';'):
+        name, value = line.strip().split('=', 1)
+        cookies[name] = value
+    session = requests.session()
+    session.cookies = requests.utils.cookiejar_from_dict(cookies)
+    return session
 
 
 # 查询表单
