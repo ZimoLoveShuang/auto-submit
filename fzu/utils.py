@@ -3,6 +3,7 @@ import json
 import uuid
 import yaml
 from fzu.encrypt import *
+from email.utils import formatdate
 from datetime import datetime, timedelta, timezone
 
 
@@ -18,8 +19,10 @@ def getCpdailyInfo(user):
         "lat": user['lat'],
         "deviceId": str(uuid.uuid1())
     }
-    cpdailyInfo = DESEncrypt(json.dumps(extension))
-    return cpdailyInfo
+    CpdailyInfo = DESEncrypt(json.dumps(extension))
+    print('CpdailyInfo')
+    print(CpdailyInfo)
+    return CpdailyInfo
 
 
 # 获取当前utc时间，并格式化为北京时间
@@ -44,7 +47,17 @@ def getYmlConfig(yaml_file='config.yml'):
     return dict(config)
 
 
-if __name__ == '__main__':
-    config = getYmlConfig('config.yml')
-    user = config['user']
-    print(getCpdailyInfo(user))
+# 将cookieStr转换为字典
+def cookieStrToDict(cookieStr):
+    cookies = {}
+    for line in cookieStr.split(';'):
+        name, value = line.strip().split('=', 1)
+        cookies[name] = value
+    return cookies
+
+
+# 获取当前的GMT格式时间
+def getNowGMTTIme():
+    dt = formatdate(None, usegmt=True)
+    return dt
+

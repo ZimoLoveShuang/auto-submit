@@ -60,3 +60,4 @@ def AESEncrypt(data, key):
 # 金智的AES解密过程
 def AESDecrypt(data, key):
     return DecryptAES(data, key)[64:]
+

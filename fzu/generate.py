@@ -1,6 +1,7 @@
 # encoding: utf-8
 from fzu import index as app
 import yaml
+import time
 
 
 # 生成默认配置
@@ -55,5 +56,25 @@ def generate():
     print(yaml.dump(defaults, allow_unicode=True))
 
 
+def MOD_AUTH_TOKEN():
+    # 3.4获取MOD_AUTH_CAS
+    url = 'https://{host}/wec-counselor-collector-apps/stu/mobile/index.html?timestamp='.format(host=app.host) + str(
+        int(round(time.time() * 1000)))
+    headers3 = {
+        'Host': app.host,
+        'Connection': 'keep-alive',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 cpdaily/8.0.8 wisedu/8.0.8',
+        'Accept-Encoding': 'gzip,deflate',
+        'Accept-Language': 'zh-CN,en-US;q=0.8',
+        'X-Requested-With': 'com.wisedu.cpdaily',
+    }
+
+    res = app.session.get(url=url, headers=headers3)
+    print(res.text)
+    print(res.headers)
+    print(app.session.cookies)
+
 if __name__ == "__main__":
     generate()
+    # MOD_AUTH_TOKEN()
