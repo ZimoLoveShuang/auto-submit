@@ -167,6 +167,26 @@ config = getYmlConfig(yaml_file='config.yml')
             <td>cdsf</td>
             <td>CLOUD</td>
         </tr>
+        <tr>
+            <td>江西理工大学</td>
+            <td>jxust</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>南京农业大学</td>
+            <td>njau</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>贵州医科大学</td>
+            <td>gmc</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>大连海洋大学</td>
+            <td>dlou</td>
+            <td>CLOUD</td>
+        </tr>
     </tbody>
 </table>
 
@@ -216,6 +236,7 @@ config = getYmlConfig(yaml_file='config.yml')
 
 # 更新日志
 
+- 2020-07-31 修复某些学校校验了非必填项导致提交失败的问题
 - 2020-07-25 新增针对福州大学的一些脚本，不完美
 - 2020-07-17 优化自动获取登陆地址的函数，处理某些学校转发到另一个域名去进行登陆认证的情况
 - 2020-07-12 新增对配置文件默认项不正确的检查，并提示

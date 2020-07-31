@@ -149,7 +149,7 @@ def queryForm(session, apis):
 # 填写form
 def fillForm(session, form, host):
     sort = 1
-    for formItem in form:
+    for formItem in form[:]:
         # 只处理必填项
         if formItem['isRequired'] == 1:
             default = config['cpdaily']['defaults'][sort - 1]['default']
@@ -187,6 +187,9 @@ def fillForm(session, form, host):
             log('必填问题%d：' % sort + formItem['title'])
             log('答案%d：' % sort + formItem['value'])
             sort += 1
+        else:
+            form.remove(formItem)
+    # print(form)
     return form
 
 
