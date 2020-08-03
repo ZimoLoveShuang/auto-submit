@@ -1,6 +1,6 @@
 user:
   #username 学号或者工号
-  username: 161105024
+  username: '161105024'
   #password 密码，用不到，原因是：login.py获取不到MOD_AUTH_CAS
   password: '161105024'
   #address 地址，定位信息

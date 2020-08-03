@@ -187,6 +187,16 @@ config = getYmlConfig(yaml_file='config.yml')
             <td>dlou</td>
             <td>CLOUD</td>
         </tr>
+        <tr>
+            <td>广东工贸职业技术学院</td>
+            <td>gdgm</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>合肥工业大学</td>
+            <td>hfut</td>
+            <td>CLOUD</td>
+        </tr>
     </tbody>
 </table>
 

@@ -1,4 +1,5 @@
 import oss2
+import time
 import requests
 from fzu.utils import *
 
@@ -16,9 +17,26 @@ session = requests.session()
 session.cookies = requests.utils.cookiejar_from_dict(Cookies)
 config = getYmlConfig('config.yml')
 
+# 校验cookie
+def MOD_AUTH_TOKEN():
+    url = 'https://{host}/wec-counselor-collector-apps/stu/mobile/index.html?timestamp='.format(host=host) + str(
+        int(round(time.time() * 1000)))
+    headers = {
+        'Host': host,
+        'Connection': 'keep-alive',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 cpdaily/8.0.8 wisedu/8.0.8',
+        'Accept-Encoding': 'gzip,deflate',
+        'Accept-Language': 'zh-CN,en-US;q=0.8',
+        'X-Requested-With': 'com.wisedu.cpdaily',
+    }
+
+    res = session.get(url=url, headers=headers)
+
 
 # 查询表单
 def queryForm():
+    MOD_AUTH_TOKEN()
     headers = {
         'Accept': 'application/json, text/plain, */*',
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 yiban/8.1.11 cpdaily/8.1.11 wisedu/8.1.11',
@@ -89,8 +107,8 @@ def fillForm(form):
                         del fieldItems[i]
             # 图片需要上传到阿里云oss
             if formItem['fieldType'] == 4:
-                fileName = uploadPicture(session, default['value'], host)
-                formItem['value'] = getPictureUrl(session, fileName, host)
+                fileName = uploadPicture(default['value'])
+                formItem['value'] = getPictureUrl(fileName)
             log('必填问题%d：' % sort + formItem['title'])
             log('答案%d：' % sort + formItem['value'])
             sort += 1
@@ -118,7 +136,7 @@ def uploadPicture(image):
 
 
 # 获取图片上传位置
-def getPictureUrl(session, fileName, host):
+def getPictureUrl(fileName):
     url = 'https://{host}/wec-counselor-collector-apps/stu/collector/previewAttachment'.format(host=host)
     data = {
         'ossKey': fileName
