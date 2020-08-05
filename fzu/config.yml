@@ -1,8 +1,8 @@
 user:
   #username 学号或者工号
   username: '161105024'
-  #password 密码，用不到，原因是：login.py获取不到MOD_AUTH_CAS
-  password: '161105024'
+  #tellphone 电话号码
+  tellphone: '15xxxxxxxx8'
   #address 地址，定位信息
   address: 中国四川省成都市金牛区一环路北1段-129号-附9号
   #email 接受通知消息的邮箱

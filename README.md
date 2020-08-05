@@ -58,33 +58,9 @@ config = getYmlConfig(yaml_file='config.yml')
     git clone https://github.com/ZimoLoveShuang/auto-submit.git
     ```
 2. 打开本地仓库文件夹下的fzu文件夹，配置`config.yml`
-3. 抓包获取到`acw_tc`，`MOD_AUTH_CAS`和`CpdailyInfo`，填入`fzu/index.py`对应位置
+3. 本地执行`login.py`获取到`sessionToken`，`acw_tc`，`MOD_AUTH_CAS`和`CpdailyInfo`，填入`fzu/index.py`对应位置
 4. 配置腾讯云函数，依赖层配置和上面一样，提交方法选择提交文件夹，请选择`fzu`文件夹，触发管理和上面一样
 5. enjoy it!!!
-6. 不要问我为什么福州大学的这么麻烦，**我也不想的**，我只能说我尽力了，我开始尝试写了个脚本，获取`MOD_AUTH_CAS`，可没两天就失效了（被堵了），后来我又尝试了全程模拟app的行为，可还是获取不到，。，唉，就不知道什么原因，**可能是还有某个过程没注意到，或者被忽略了**，精力有限，暂时先这样吧
-7. 至于抓包方案，不懂的朋友们，可以去我的博客爬帖，如果你用fiddler，抓到类似下面这样就行了，将cookie字段的值填入`fzu/index.py`
-    ```http request
-    POST https://fzu.cpdaily.com/wec-counselor-collector-apps/stu/collector/queryCollectorProcessingList HTTP/1.1
-    Host: fzu.cpdaily.com
-    Connection: keep-alive
-    Content-Length: 29
-    accept: application/json, text/plain, */*
-    Origin: https://fzu.cpdaily.com
-    x-requested-with: XMLHttpRequest
-    User-Agent: Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 cpdaily/8.0.8 wisedu/8.0.8
-    content-type: application/json
-    Referer: https://fzu.cpdaily.com/wec-counselor-collector-apps/stu/mobile/index.html?timestamp=1595648285420
-    Accept-Encoding: gzip,deflate
-    Accept-Language: zh-CN,en-US;q=0.8
-    # cookie信息已打码
-    Cookie: acw_tc=16b20adb15956482658adff07efff0fbffd044b2566fd2f471b0cb184e0ae8; MOD_AUTH_CAS=0-YhXWbbabc3cssszge123451833587
-    
-    {"pageSize":6,"pageNumber":1}
-    ```
-8. CpdailyInfo（和Cpdaily-Extension是同一个东西），如果你抓不到，可以直接执行`fzu/utils.py`，将输出复制到`fzu/index.py`
-9. 未测试cookie的失效时限
-10. 想来模拟点击应该是**最为有效且简单**的方案，仅针对福州大学的同学们来说
-11. 至于为什么没有删掉**没有用的**`login.py`，我的想法是就当给大家写个参考吧，同时这也记录着我的探索过程
 
 # 封禁白嫖说明
 
@@ -197,10 +173,20 @@ config = getYmlConfig(yaml_file='config.yml')
             <td>hfut</td>
             <td>CLOUD</td>
         </tr>
+        <tr>
+            <td>河南中医药大学</td>
+            <td>hactcm</td>
+            <td>NOtCLOUD</td>
+        </tr>
+        <tr>
+            <td>新乡学院</td>
+            <td>xxu</td>
+            <td>CLOUD</td>
+        </tr>
     </tbody>
 </table>
 
-#### <s>福州大学的同学自动签到已支持，请看[auto-sign项目](https://github.com/ZimoLoveShuang/auto-sign)</s>暂不支持，原因：接口更新，获取不到MOD_AUTH_CAS
+#### 福州大学的同学自动签到和每日一报均已支持，每日一报请看fzu文件夹，签到请看[auto-sign项目的fzu文件夹](https://github.com/ZimoLoveShuang/auto-sign)
 
 # 说明
 
@@ -246,6 +232,7 @@ config = getYmlConfig(yaml_file='config.yml')
 
 # 更新日志
 
+- 2020-08-05 福州大学的学子不再需要手动抓包，基本完美使用
 - 2020-07-31 修复某些学校校验了非必填项导致提交失败的问题
 - 2020-07-25 新增针对福州大学的一些脚本，不完美
 - 2020-07-17 优化自动获取登陆地址的函数，处理某些学校转发到另一个域名去进行登陆认证的情况

@@ -1,13 +1,12 @@
 import oss2
-import time
-import requests
-from fzu.utils import *
+from fzu.login import *
 
 ############配置############
 Cookies = {
     'acw_tc': '',
     'MOD_AUTH_CAS': '',
 }
+sessionToken = ''
 CpdailyInfo = ''
 ############配置############
 
@@ -17,26 +16,13 @@ session = requests.session()
 session.cookies = requests.utils.cookiejar_from_dict(Cookies)
 config = getYmlConfig('config.yml')
 
-# 校验cookie
-def MOD_AUTH_TOKEN():
-    url = 'https://{host}/wec-counselor-collector-apps/stu/mobile/index.html?timestamp='.format(host=host) + str(
-        int(round(time.time() * 1000)))
-    headers = {
-        'Host': host,
-        'Connection': 'keep-alive',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 cpdaily/8.0.8 wisedu/8.0.8',
-        'Accept-Encoding': 'gzip,deflate',
-        'Accept-Language': 'zh-CN,en-US;q=0.8',
-        'X-Requested-With': 'com.wisedu.cpdaily',
-    }
-
-    res = session.get(url=url, headers=headers)
-
 
 # 查询表单
 def queryForm():
-    MOD_AUTH_TOKEN()
+    data = {
+        'sessionToken': sessionToken
+    }
+    getModAuthCas(data)
     headers = {
         'Accept': 'application/json, text/plain, */*',
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 yiban/8.1.11 cpdaily/8.1.11 wisedu/8.1.11',
@@ -213,7 +199,6 @@ def main_handler(event, context):
             sendMessage(user['email'], '自动提交失败！错误是' + msg)
             exit(-1)
     except:
-        log('可能是cookie过期了，请尝试重新抓包获取')
         return 'auto submit fail.'
     else:
         return 'auto submit success.'
