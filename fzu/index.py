@@ -1,5 +1,5 @@
 import oss2
-from fzu.login import *
+from login import *
 
 ############配置############
 Cookies = {

@@ -1,5 +1,5 @@
 # encoding: utf-8
-from fzu import index as app
+import index as app
 import yaml
 
 

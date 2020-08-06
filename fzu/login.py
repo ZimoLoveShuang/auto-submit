@@ -1,6 +1,6 @@
 import time
 import requests
-from fzu.utils import *
+from utils import *
 
 # 全局配置
 config = getYmlConfig()

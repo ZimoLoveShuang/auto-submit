@@ -2,7 +2,7 @@ import sys
 import json
 import uuid
 import yaml
-from fzu.encrypt import *
+from encrypt import *
 from email.utils import formatdate
 from datetime import datetime, timedelta, timezone
 
