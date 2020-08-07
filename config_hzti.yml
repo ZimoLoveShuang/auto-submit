@@ -7,9 +7,9 @@ users:
   #单个用户配置
   - user:
       #username 学号或者工号
-      username: 20171210
+      username: '20171210'
       #password 密码
-      password: 20171210
+      password: '20171210'
       #address 地址，定位信息
       address: 广东省惠州市惠东县xx大道x号
       #email 接受通知消息的邮箱
