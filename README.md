@@ -57,11 +57,12 @@ config = getYmlConfig(yaml_file='config.yml')
     ```shell script
     git clone https://github.com/ZimoLoveShuang/auto-submit.git
     ```
-2. 打开本地仓库文件夹下的fzu文件夹，配置`config.yml`
-3. 安装依赖`pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple`
+2. 进入`auto-submit`目录下，安装依赖，命令`pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple`
+3. 打开本地仓库文件夹下的`fzu`文件夹，配置`config.yml`
 4. 本地执行`python login.py`获取到`sessionToken`，`acw_tc`，`MOD_AUTH_CAS`和`CpdailyInfo`，填入`fzu/index.py`对应位置
 5. 配置腾讯云函数，依赖层配置和上面一样，提交方法选择提交文件夹，请选择`fzu`文件夹，触发管理和上面一样
 6. enjoy it!!!
+7. 注意：如果你本地有多个python环境，请使用`python3`
 
 # 封禁白嫖说明
 
