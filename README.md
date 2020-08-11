@@ -192,8 +192,20 @@ config = getYmlConfig(yaml_file='config.yml')
             <td>hqu</td>
             <td>NOTCLOUD</td>
         </tr>
+        <tr>
+            <td>滁州职业技术学院</td>
+            <td>chzc</td>
+            <td>CLOUD</td>
+        </tr>
+        <tr>
+            <td>大连大学</td>
+            <td>dlu</td>
+            <td>CLOUD</td>
+        </tr>
     </tbody>
 </table>
+
+#### 更多学校支持，敬请自行测试，没意外的话，大概是通用
 
 #### 福州大学的同学自动签到和每日一报均已支持，每日一报请看fzu文件夹，签到请看[auto-sign项目的fzu文件夹](https://github.com/ZimoLoveShuang/auto-sign)
 
