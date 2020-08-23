@@ -6,7 +6,12 @@ import yaml
 import oss2
 from urllib.parse import urlparse
 from datetime import datetime, timedelta, timezone
+from urllib3.exceptions import InsecureRequestWarning
 
+# debug模式
+debug = False
+if debug:
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # 读取yml配置
 def getYmlConfig(yaml_file='config.yml'):
@@ -25,7 +30,7 @@ config = getYmlConfig(yaml_file='config.yml')
 def getCpdailyApis(user):
     apis = {}
     user = user['user']
-    schools = requests.get(url='https://www.cpdaily.com/v6/config/guest/tenant/list').json()['data']
+    schools = requests.get(url='https://www.cpdaily.com/v6/config/guest/tenant/list', verify=not debug).json()['data']
     flag = True
     for one in schools:
         if one['name'] == user['school']:
@@ -36,7 +41,8 @@ def getCpdailyApis(user):
             params = {
                 'ids': one['id']
             }
-            res = requests.get(url='https://www.cpdaily.com/v6/config/guest/tenant/info', params=params)
+            res = requests.get(url='https://www.cpdaily.com/v6/config/guest/tenant/info', params=params,
+                               verify=not debug)
             data = res.json()['data'][0]
             joinType = data['joinType']
             idsUrl = data['idsUrl']
@@ -55,10 +61,13 @@ def getCpdailyApis(user):
                     'login-url'] = idsUrl + '/login?service=' + parse.scheme + r"%3A%2F%2F" + host + r'%2Fportal%2Flogin'
                 apis['host'] = host
             if joinType == 'NOTCLOUD':
-                res = requests.get(url=apis['login-url'])
+                res = requests.get(url=apis['login-url'], verify=not debug)
                 if urlparse(apis['login-url']).netloc != urlparse(res.url):
                     apis['login-url'] = res.url
             break
+    if user['school'] == '云南财经大学':
+        apis[
+            'login-url'] = 'http://idas.ynufe.edu.cn/authserver/login?service=https%3A%2F%2Fynufe.cpdaily.com%2Fportal%2Flogin'
     if flag:
         log(user['school'] + ' 未找到该院校信息，请检查是否是学校全称错误')
         exit(-1)
@@ -93,7 +102,7 @@ def getSession(user, loginUrl):
 
     cookies = {}
     # 借助上一个项目开放出来的登陆API，模拟登陆
-    res = requests.post(config['login']['api'], params)
+    res = requests.post(config['login']['api'], params, verify=not debug)
     cookieStr = str(res.json()['cookies'])
     log(cookieStr)
     if cookieStr == 'None':
@@ -126,7 +135,7 @@ def queryForm(session, apis):
         'pageSize': 6,
         'pageNumber': 1
     }
-    res = session.post(queryCollectWidUrl, headers=headers, data=json.dumps(params))
+    res = session.post(queryCollectWidUrl, headers=headers, data=json.dumps(params), verify=not debug)
     if len(res.json()['datas']['rows']) < 1:
         return None
 
@@ -135,12 +144,12 @@ def queryForm(session, apis):
 
     detailCollector = 'https://{host}/wec-counselor-collector-apps/stu/collector/detailCollector'.format(host=host)
     res = session.post(url=detailCollector, headers=headers,
-                       data=json.dumps({"collectorWid": collectWid}))
+                       data=json.dumps({"collectorWid": collectWid}), verify=not debug)
     schoolTaskWid = res.json()['datas']['collector']['schoolTaskWid']
 
     getFormFields = 'https://{host}/wec-counselor-collector-apps/stu/collector/getFormFields'.format(host=host)
     res = session.post(url=getFormFields, headers=headers, data=json.dumps(
-        {"pageSize": 100, "pageNumber": 1, "formWid": formWid, "collectorWid": collectWid}))
+        {"pageSize": 100, "pageNumber": 1, "formWid": formWid, "collectorWid": collectWid}), verify=not debug)
 
     form = res.json()['datas']['rows']
     return {'collectWid': collectWid, 'formWid': formWid, 'schoolTaskWid': schoolTaskWid, 'form': form}
@@ -196,7 +205,7 @@ def fillForm(session, form, host):
 # 上传图片到阿里云oss
 def uploadPicture(session, image, host):
     url = 'https://{host}/wec-counselor-collector-apps/stu/collector/getStsAccess'.format(host=host)
-    res = session.post(url=url, headers={'content-type': 'application/json'}, data=json.dumps({}))
+    res = session.post(url=url, headers={'content-type': 'application/json'}, data=json.dumps({}), verify=not debug)
     datas = res.json().get('datas')
     fileName = datas.get('fileName')
     accessKeyId = datas.get('accessKeyId')
@@ -219,7 +228,7 @@ def getPictureUrl(session, fileName, host):
     data = {
         'ossKey': fileName
     }
-    res = session.post(url=url, headers={'content-type': 'application/json'}, data=json.dumps(data), verify=False)
+    res = session.post(url=url, headers={'content-type': 'application/json'}, data=json.dumps(data), verify=not debug)
     photoUrl = res.json().get('datas')
     return photoUrl
 
@@ -243,7 +252,7 @@ def submitForm(formWid, address, collectWid, schoolTaskWid, form, session, host)
               "form": form}
     # print(params)
     submitForm = 'https://{host}/wec-counselor-collector-apps/stu/collector/submitForm'.format(host=host)
-    r = session.post(url=submitForm, headers=headers, data=json.dumps(params))
+    r = session.post(url=submitForm, headers=headers, data=json.dumps(params), verify=not debug)
     msg = r.json()['message']
     return msg
 

@@ -10,6 +10,8 @@
 
 #### 如果此项目侵犯了您或者您公司的权益，请立即联系我删除
 
+#### 招募临沂大学志愿者测试，也欢迎其他学校同学加入交流群：870967170
+
 # 项目说明
 
 - `config.yml` 默认配置文件
@@ -48,7 +50,7 @@
 
 ## 其他学校的同学
 
-使用方式同宜宾学院同学，但请注意修改`index.py`中`21`行，读取的配置文件要和你的配置文件名称对应
+使用方式同宜宾学院同学，但请注意修改`index.py`中`26`行，读取的配置文件要和你的配置文件名称对应
 ```python
 config = getYmlConfig(yaml_file='config.yml')
 ```
@@ -202,6 +204,46 @@ config = getYmlConfig(yaml_file='config.yml')
             <td>dlu</td>
             <td>CLOUD</td>
         </tr>
+        <tr>
+            <td>江西理工大学应用科学学院</td>
+            <td>jxust</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>四川建筑职业技术学院</td>
+            <td>scac</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>福建医科大学</td>
+            <td>fjmu</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>四川信息职业技术学院</td>
+            <td>scitc</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>广州大学华软软件学院</td>
+            <td>sise</td>
+            <td>CLOUD</td>
+        </tr>
+        <tr>
+            <td>贵州交通职业技术学院</td>
+            <td>gzjtzy</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>南京城市职业学院</td>
+            <td>ncc</td>
+            <td>CLOUD</td>
+        </tr>
+        <tr>
+            <td>云南财经大学</td>
+            <td>ynufe</td>
+            <td>NOTCLOUD</td>
+        </tr>
     </tbody>
 </table>
 
@@ -253,6 +295,7 @@ config = getYmlConfig(yaml_file='config.yml')
 
 # 更新日志
 
+- 2020-08-23 修复云南财经大学自动获取的登陆地址不正确问题
 - 2020-08-07 账号和密码都统一使用英文单引号引起来，避免某些账号会出现yml读取的内容错误的问题
 - 2020-08-05 福州大学的学子不再需要手动抓包，基本完美使用
 - 2020-07-31 修复某些学校校验了非必填项导致提交失败的问题
