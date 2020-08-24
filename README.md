@@ -244,6 +244,16 @@ config = getYmlConfig(yaml_file='config.yml')
             <td>ynufe</td>
             <td>NOTCLOUD</td>
         </tr>
+        <tr>
+            <td>新疆财经大学</td>
+            <td>xjufe</td>
+            <td>NOTCLOUD</td>
+        </tr>
+        <tr>
+            <td>安阳师范学院</td>
+            <td>aynu</td>
+            <td>NOTCLOUD</td>
+        </tr>
     </tbody>
 </table>
 
