@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
+from urllib.parse import urlparse
+
 import requests
 from utils import *
 
@@ -19,7 +21,59 @@ extension = {
     "deviceId": str(uuid.uuid1())
 }
 CpdailyInfo = DESEncrypt(json.dumps(extension))
-host = 'fzu.cpdaily.com'
+
+
+# 获取今日校园api
+def getCpdailyApis(user, debug=False):
+    apis = {}
+    schools = requests.get(url='https://www.cpdaily.com/v6/config/guest/tenant/list', verify=not debug).json()['data']
+    flag = True
+    for one in schools:
+        if one['name'] == user['school']:
+            if one['joinType'] == 'NONE':
+                log(user['school'] + ' 未加入今日校园')
+                exit(-1)
+            flag = False
+            params = {
+                'ids': one['id']
+            }
+            apis['tenantId'] = one['id']
+            res = requests.get(url='https://www.cpdaily.com/v6/config/guest/tenant/info', params=params,
+                               verify=not debug)
+            data = res.json()['data'][0]
+            joinType = data['joinType']
+            idsUrl = data['idsUrl']
+            ampUrl = data['ampUrl']
+            ampUrl2 = data['ampUrl2']
+            if 'campusphere' in ampUrl or 'cpdaily' in ampUrl:
+                parse = urlparse(ampUrl)
+                host = parse.netloc
+                apis[
+                    'login-url'] = idsUrl + '/login?service=' + parse.scheme + r"%3A%2F%2F" + host + r'%2Fportal%2Flogin'
+                apis['host'] = host
+            if 'campusphere' in ampUrl2 or 'cpdaily' in ampUrl2:
+                parse = urlparse(ampUrl2)
+                host = parse.netloc
+                apis[
+                    'login-url'] = idsUrl + '/login?service=' + parse.scheme + r"%3A%2F%2F" + host + r'%2Fportal%2Flogin'
+                apis['host'] = host
+            if joinType == 'NOTCLOUD':
+                res = requests.get(url=apis['login-url'], verify=not debug)
+                if urlparse(apis['login-url']).netloc != urlparse(res.url):
+                    apis['login-url'] = res.url
+            break
+    if user['school'] == '云南财经大学':
+        apis[
+            'login-url'] = 'http://idas.ynufe.edu.cn/authserver/login?service=https%3A%2F%2Fynufe.cpdaily.com%2Fportal%2Flogin'
+    if flag:
+        log(user['school'] + ' 未找到该院校信息，请检查是否是学校全称错误')
+        exit(-1)
+    log(apis)
+    return apis
+
+
+apis = getCpdailyApis(user)
+host = apis['host']
 
 
 # 获取验证码
@@ -28,7 +82,7 @@ def getMessageCode():
     headers = {
         'SessionToken': 'szFn6zAbjjU=',
         'clientType': 'cpdaily_student',
-        'tenantId': '',
+        'tenantId': apis['tenantId'],
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.8.1',
         'deviceType': '1',
         'CpdailyStandAlone': '0',
@@ -58,7 +112,7 @@ def mobileLogin(code):
     headers = {
         'SessionToken': 'szFn6zAbjjU=',
         'clientType': 'cpdaily_student',
-        'tenantId': '',
+        'tenantId': apis['tenantId'],
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.8.1',
         'deviceType': '1',
         'CpdailyStandAlone': '0',
@@ -92,7 +146,7 @@ def validation(data):
     headers = {
         'SessionToken': DESEncrypt(sessionToken),
         'clientType': 'cpdaily_student',
-        'tenantId': 'fzu',
+        'tenantId': apis['tenantId'],
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.8.1',
         'deviceType': '1',
         'CpdailyStandAlone': '0',
@@ -138,7 +192,7 @@ def updateACwTc(data):
         'AmpCookies': DESEncrypt(json.dumps(amp)),
         'SessionToken': DESEncrypt(sessionToken),
         'clientType': 'cpdaily_student',
-        'tenantId': 'fzu',
+        'tenantId': apis['tenantId'],
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.8.1',
         'deviceType': '1',
         'CpdailyStandAlone': '0',
@@ -180,7 +234,7 @@ def getModAuthCas(data):
         'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; PCRT00 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 cpdaily/8.0.8 wisedu/8.0.8',
         'Accept-Encoding': 'gzip,deflate',
         'Accept-Language': 'zh-CN,en-US;q=0.8',
-        'Cookie': 'clientType=cpdaily_student; tenantId=fzu; sessionToken=' + sessionToken,
+        'Cookie': 'clientType=cpdaily_student; tenantId=' + apis['tenantId'] + '; sessionToken=' + sessionToken,
     }
     res = session.get(url=location, headers=headers2, allow_redirects=False)
     location = res.headers['location']

@@ -12,10 +12,11 @@ CpdailyInfo = ''
 ############配置############
 
 # 全局
-host = 'fzu.cpdaily.com'
 session = requests.session()
 session.cookies = requests.utils.cookiejar_from_dict(Cookies)
 config = getYmlConfig('config.yml')
+user = config['user']
+host = getCpdailyApis(user)['host']
 
 
 # 查询表单
