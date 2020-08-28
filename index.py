@@ -68,6 +68,9 @@ def getCpdailyApis(user):
     if user['school'] == '云南财经大学':
         apis[
             'login-url'] = 'http://idas.ynufe.edu.cn/authserver/login?service=https%3A%2F%2Fynufe.cpdaily.com%2Fportal%2Flogin'
+    if user['school'] == '中国矿业大学':
+        apis[
+            'login-url'] = 'http://authserver.cumt.edu.cn/authserver/login?service=http%3A%2F%2Fauthserver.cumt.edu.cn%2Fauthserver%2Fmobile%2Fcallback%3FappId%3D744946645598208000';
     if flag:
         log(user['school'] + ' 未找到该院校信息，请检查是否是学校全称错误')
         exit(-1)
@@ -135,6 +138,9 @@ def queryForm(session, apis):
         'pageSize': 6,
         'pageNumber': 1
     }
+    # 矿大 获取MOD_AUTH_CAS
+    if 'cumt' in host:
+        session.get('http://authserver.cumt.edu.cn/authserver/login?service=https%3A%2F%2Fcumt.cpdaily.com%2Fportal%2Flogin')
     res = session.post(queryCollectWidUrl, headers=headers, data=json.dumps(params), verify=not debug)
     if len(res.json()['datas']['rows']) < 1:
         return None
