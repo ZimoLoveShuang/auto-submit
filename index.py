@@ -13,6 +13,7 @@ debug = False
 if debug:
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+
 # 读取yml配置
 def getYmlConfig(yaml_file='config.yml'):
     file = open(yaml_file, 'r', encoding="utf-8")
@@ -47,30 +48,25 @@ def getCpdailyApis(user):
             joinType = data['joinType']
             idsUrl = data['idsUrl']
             ampUrl = data['ampUrl']
-            ampUrl2 = data['ampUrl2']
             if 'campusphere' in ampUrl or 'cpdaily' in ampUrl:
                 parse = urlparse(ampUrl)
                 host = parse.netloc
+                res = requests.get(parse.scheme + '://' + host)
+                parse = urlparse(res.url)
                 apis[
                     'login-url'] = idsUrl + '/login?service=' + parse.scheme + r"%3A%2F%2F" + host + r'%2Fportal%2Flogin'
                 apis['host'] = host
+
+            ampUrl2 = data['ampUrl2']
             if 'campusphere' in ampUrl2 or 'cpdaily' in ampUrl2:
                 parse = urlparse(ampUrl2)
                 host = parse.netloc
+                res = requests.get(parse.scheme + '://' + host)
+                parse = urlparse(res.url)
                 apis[
                     'login-url'] = idsUrl + '/login?service=' + parse.scheme + r"%3A%2F%2F" + host + r'%2Fportal%2Flogin'
                 apis['host'] = host
-            if joinType == 'NOTCLOUD':
-                res = requests.get(url=apis['login-url'], verify=not debug)
-                if urlparse(apis['login-url']).netloc != urlparse(res.url):
-                    apis['login-url'] = res.url
             break
-    if user['school'] == '云南财经大学':
-        apis[
-            'login-url'] = 'http://idas.ynufe.edu.cn/authserver/login?service=https%3A%2F%2Fynufe.cpdaily.com%2Fportal%2Flogin'
-    if user['school'] == '中国矿业大学':
-        apis[
-            'login-url'] = 'http://authserver.cumt.edu.cn/authserver/login?service=http%3A%2F%2Fauthserver.cumt.edu.cn%2Fauthserver%2Fmobile%2Fcallback%3FappId%3D744946645598208000';
     if flag:
         log(user['school'] + ' 未找到该院校信息，请检查是否是学校全称错误')
         exit(-1)
@@ -138,9 +134,6 @@ def queryForm(session, apis):
         'pageSize': 6,
         'pageNumber': 1
     }
-    # 矿大 获取MOD_AUTH_CAS
-    if 'cumt' in host:
-        session.get('http://authserver.cumt.edu.cn/authserver/login?service=https%3A%2F%2Fcumt.cpdaily.com%2Fportal%2Flogin')
     res = session.post(queryCollectWidUrl, headers=headers, data=json.dumps(params), verify=not debug)
     if len(res.json()['datas']['rows']) < 1:
         return None
@@ -314,10 +307,10 @@ def main_handler(event, context):
                 log('模拟登陆失败。。。')
                 log('原因可能是学号或密码错误，请检查配置后，重启脚本。。。')
                 exit(-1)
-    except:
-        return 'auto submit fail.'
+    except Exception as e:
+        raise e
     else:
-        return 'auto submit success.'
+        return 'success'
 
 
 # 配合Windows计划任务等使用
