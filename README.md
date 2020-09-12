@@ -326,8 +326,6 @@
 # 其他
 
 1. 关于[Cpdaily-Extension](https://github.com/ZimoLoveShuang/yibinu-score-crawler/blob/master/src/main/java/wiki/zimo/scorecrawler/helper/DESHelper.java)：今日校园APP的处理是登陆时获取，每台设备唯一，但是有个空子就是，只要你不退出登陆，这个就会一直被维持，一直有效，换句话说，就是在APP上手动退出后失效，所以无需重复抓包获取
-![意外发现：Cpdaily-Extension](screenshots/13d573c2.png)
-![意外发现：Cpdaily-Extension](screenshots/e5f77237.png)
 2. 关于抓包：今日校园APP某些接口启动了`ssl pinning`机制，一般的方法无法抓包
 3. 提供一个参考的 绕过 `ssl pinning`机制的方法：使用`逍遥安卓4.4.4`模拟器，配合`xposed框架`，使用`justtrustme模块`，`hook`掉验证证书的函数即可抓包
 4. 此项目为自动提交疫情收集表，自动签到请参考另一个开源项目[auto-sign](https://github.com/ZimoLoveShuang/auto-sign)
@@ -368,6 +366,7 @@
 @所有捐赠作者的朋友
 @所有支持作者的朋友
 @所有贡献出服务器的热心网友
+@所有贡献出邮箱的热心网友
 @所有反馈的朋友
 @所有测试的朋友
 
