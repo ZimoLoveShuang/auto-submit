@@ -27,6 +27,7 @@
 
 1. 信息收集，此项目
 2. 签到，[auto-sign项目](https://github.com/ZimoLoveShuang/auto-sign)
+3. 查寝，[auto-attendance项目](https://github.com/ZimoLoveShuang/auto-attendance)
 
 # 使用方式
 
