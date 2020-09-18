@@ -42,7 +42,7 @@
 
 1. 在`config.yml`中填好学校名称
 2. 执行`index.py，会报错，因为你只填了学校信息，不用管他，然后你会得到类似下面这样的输出
-    ```json
+    ```
     2020-09-18 10:35:35 {'login-url': 'http://authserver.yibinu.edu.cn/authserver/login?service=https%3A%2F%2Fyibinu.cpdaily.com%2Fportal%2Flogin', 'host': 'yibinu.cpdaily.com'}
     ```
    从这个里面拿出host的值`yibinu.cpdaily.com`
@@ -54,7 +54,7 @@
 
 1. 在`config.yml`中填好用户名（学号或者工号），密码，学校等
 2. 执行`index.py`，大概率会报错，因为你没有配置表单默认值信息，不用管他，然后你会得到类似下面这样的输出
-    ```json
+    ```
     2020-09-18 10:57:05 {'msg': 'login failed! 登陆失败，cookies返回为null', 'code': 1, 'cookies': None}
     ```
    从这个里面拿出msg的值`login failed! 登陆失败，cookies返回为null`
