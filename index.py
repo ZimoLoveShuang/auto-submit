@@ -165,7 +165,7 @@ def fillForm(session, form, host):
                 log('第%d个默认配置不正确，请检查' % sort)
                 exit(-1)
             # 文本直接赋值
-            if formItem['fieldType'] == 1:
+            if formItem['fieldType'] == 1 or formItem['fieldType'] == 5:
                 formItem['value'] = default['value']
             # 单选框需要删掉多余的选项
             if formItem['fieldType'] == 2:

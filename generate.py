@@ -20,7 +20,7 @@ def generate():
             default['title'] = formItem['title']
             default['type'] = formItem['fieldType']
             print('问题%d：' % sort + default['title'])
-            if default['type'] == 1:
+            if default['type'] == 1 or default['type'] == 5:
                 default['value'] = input("请输入文本：")
             if default['type'] == 2:
                 fieldItems = formItem['fieldItems']
