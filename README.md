@@ -42,7 +42,7 @@
 ### 方式二：自查
 
 1. 在`config.yml`中填好学校名称
-2. 执行`index.py，会报错，因为你只填了学校信息，不用管他，然后你会得到类似下面这样的输出
+2. 执行`index.py`，会报错，因为你只填了学校信息，不用管他，然后你会得到类似下面这样的输出
     ```
     2020-09-18 10:35:35 {'login-url': 'http://authserver.yibinu.edu.cn/authserver/login?service=https%3A%2F%2Fyibinu.cpdaily.com%2Fportal%2Flogin', 'host': 'yibinu.cpdaily.com'}
     ```
