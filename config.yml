@@ -15,7 +15,7 @@ users:
       #email 接受通知消息的邮箱
       email: 461009747@qq.com
       #school 学校全称
-      school: 宜宾学院
+      school: 芜湖职业技术学院
   #多用户配置，将下面的注释去掉即可，如果有表单内容有图片，不建议使用多用户配置
 #  - user:
 #      #username 学号或者工号
