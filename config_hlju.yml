@@ -7,13 +7,13 @@ users:
   #单个用户配置
   - user:
       #username 学号或者工号
-      username: '20201942'
+      username: 'xxxxxxxx'
       #password 密码
-      password: '031112'
+      password: 'xxxxxx'
       #address 地址，定位信息
       address: 中国黑龙江省哈尔滨市南岗区学府东四道街
       #email 接受通知消息的邮箱
-      email: 2684117397@qq.com
+      email: xxx@xx.xx
       #school 学校全称
       school: 黑龙江大学
       #lon 经度
@@ -26,7 +26,7 @@ users:
 #今日校园相关配置
 cpdaily:
   #是否检查问题,true检查，false不检查
-  check: true
+  check: false
   #附加信息组默认选项配置，没有可留空
   defaults:
   #附加信息组默认选项配置，按顺序，可留空
