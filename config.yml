@@ -59,3 +59,13 @@ cpdaily:
         type: 2
         title: 共同居住家属情况
         value: 正常
+
+Info:
+  ServerChan: # 填写Server酱的SCKEY
+  Qsmg: # 填写Qsmg酱的SCKEY
+  Email:
+    enable: true
+    server: smtp.exmail.qq.com # 填写邮件的smtp服务器
+    port: 465 # 填写邮件服务器的端口号
+    account: '' # 邮件服务器登录用户名
+    password: '' # 邮件服务器登录密码

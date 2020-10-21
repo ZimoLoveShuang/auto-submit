@@ -7,6 +7,9 @@ import oss2
 from urllib.parse import urlparse
 from datetime import datetime, timedelta, timezone
 from urllib3.exceptions import InsecureRequestWarning
+import smtplib
+from email.mime.text import MIMEText
+from email.utils import formataddr
 
 # debug模式
 debug = False
@@ -31,7 +34,8 @@ config = getYmlConfig(yaml_file='config.yml')
 def getCpdailyApis(user):
     apis = {}
     user = user['user']
-    schools = requests.get(url='https://www.cpdaily.com/v6/config/guest/tenant/list', verify=not debug).json()['data']
+    schools = requests.get(
+        url='https://www.cpdaily.com/v6/config/guest/tenant/list', verify=not debug).json()['data']
     flag = True
     for one in schools:
         if one['name'] == user['school']:
@@ -134,19 +138,22 @@ def queryForm(session, apis):
         'pageSize': 6,
         'pageNumber': 1
     }
-    res = session.post(queryCollectWidUrl, headers=headers, data=json.dumps(params), verify=not debug)
+    res = session.post(queryCollectWidUrl, headers=headers,
+                       data=json.dumps(params), verify=not debug)
     if len(res.json()['datas']['rows']) < 1:
         return None
 
     collectWid = res.json()['datas']['rows'][0]['wid']
     formWid = res.json()['datas']['rows'][0]['formWid']
 
-    detailCollector = 'https://{host}/wec-counselor-collector-apps/stu/collector/detailCollector'.format(host=host)
+    detailCollector = 'https://{host}/wec-counselor-collector-apps/stu/collector/detailCollector'.format(
+        host=host)
     res = session.post(url=detailCollector, headers=headers,
                        data=json.dumps({"collectorWid": collectWid}), verify=not debug)
     schoolTaskWid = res.json()['datas']['collector']['schoolTaskWid']
 
-    getFormFields = 'https://{host}/wec-counselor-collector-apps/stu/collector/getFormFields'.format(host=host)
+    getFormFields = 'https://{host}/wec-counselor-collector-apps/stu/collector/getFormFields'.format(
+        host=host)
     res = session.post(url=getFormFields, headers=headers, data=json.dumps(
         {"pageSize": 100, "pageNumber": 1, "formWid": formWid, "collectorWid": collectWid}), verify=not debug)
 
@@ -203,8 +210,10 @@ def fillForm(session, form, host):
 
 # 上传图片到阿里云oss
 def uploadPicture(session, image, host):
-    url = 'https://{host}/wec-counselor-collector-apps/stu/collector/getStsAccess'.format(host=host)
-    res = session.post(url=url, headers={'content-type': 'application/json'}, data=json.dumps({}), verify=not debug)
+    url = 'https://{host}/wec-counselor-collector-apps/stu/collector/getStsAccess'.format(
+        host=host)
+    res = session.post(url=url, headers={
+                       'content-type': 'application/json'}, data=json.dumps({}), verify=not debug)
     datas = res.json().get('datas')
     fileName = datas.get('fileName')
     accessKeyId = datas.get('accessKeyId')
@@ -212,10 +221,12 @@ def uploadPicture(session, image, host):
     securityToken = datas.get('securityToken')
     endPoint = datas.get('endPoint')
     bucket = datas.get('bucket')
-    bucket = oss2.Bucket(oss2.Auth(access_key_id=accessKeyId, access_key_secret=accessSecret), endPoint, bucket)
+    bucket = oss2.Bucket(oss2.Auth(access_key_id=accessKeyId,
+                                   access_key_secret=accessSecret), endPoint, bucket)
     with open(image, "rb") as f:
         data = f.read()
-    bucket.put_object(key=fileName, headers={'x-oss-security-token': securityToken}, data=data)
+    bucket.put_object(key=fileName, headers={
+                      'x-oss-security-token': securityToken}, data=data)
     res = bucket.sign_url('PUT', fileName, 60)
     # log(res)
     return fileName
@@ -223,11 +234,13 @@ def uploadPicture(session, image, host):
 
 # 获取图片上传位置
 def getPictureUrl(session, fileName, host):
-    url = 'https://{host}/wec-counselor-collector-apps/stu/collector/previewAttachment'.format(host=host)
+    url = 'https://{host}/wec-counselor-collector-apps/stu/collector/previewAttachment'.format(
+        host=host)
     data = {
         'ossKey': fileName
     }
-    res = session.post(url=url, headers={'content-type': 'application/json'}, data=json.dumps(data), verify=not debug)
+    res = session.post(url=url, headers={
+                       'content-type': 'application/json'}, data=json.dumps(data), verify=not debug)
     photoUrl = res.json().get('datas')
     return photoUrl
 
@@ -250,18 +263,22 @@ def submitForm(formWid, address, collectWid, schoolTaskWid, form, session, host)
     params = {"formWid": formWid, "address": address, "collectWid": collectWid, "schoolTaskWid": schoolTaskWid,
               "form": form}
     # print(params)
-    submitForm = 'https://{host}/wec-counselor-collector-apps/stu/collector/submitForm'.format(host=host)
-    r = session.post(url=submitForm, headers=headers, data=json.dumps(params), verify=not debug)
+    submitForm = 'https://{host}/wec-counselor-collector-apps/stu/collector/submitForm'.format(
+        host=host)
+    r = session.post(url=submitForm, headers=headers,
+                     data=json.dumps(params), verify=not debug)
     msg = r.json()['message']
     return msg
 
+title_text = '今日校园疫结果通知'
 
 # 发送邮件通知
 def sendMessage(send, msg):
     if send != '':
         log('正在发送邮件通知。。。')
         res = requests.post(url='http://www.zimo.wiki:8080/mail-sender/sendMail',
-                            data={'title': '今日校园疫情上报自动提交结果通知', 'content': getTimeStr() + str(msg), 'to': send})
+                            data={'title': title_text, 'content': getTimeStr() + str(msg), 'to': send})
+
         code = res.json()['code']
         if code == 0:
             log('发送邮件通知成功。。。')
@@ -269,8 +286,57 @@ def sendMessage(send, msg):
             log('发送邮件通知失败。。。')
             log(res.json())
 
+def sendEmail(send,msg):
+    my_sender= config['Info']['Email']['account']   # 发件人邮箱账号
+    my_pass = config['Info']['Email']['password']         # 发件人邮箱密码
+    my_user = send      # 收件人邮箱账号，我这边发送给自己
+    try:
+        msg=MIMEText(getTimeStr() + str(msg),'plain','utf-8')
+        msg['From']=formataddr(["FromRunoob",my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
+        msg['To']=formataddr(["FK",my_user])              # 括号里的对应收件人邮箱昵称、收件人邮箱账号
+        msg['Subject']=title_text               # 邮件的主题，也可以说是标题
 
-# 腾讯云函数启动函数
+        server=smtplib.SMTP_SSL(config['Info']['Email']['server'], config['Info']['Email']['port'])  # 发件人邮箱中的SMTP服务器，端口是25
+        server.login(my_sender, my_pass)  # 括号中对应的是发件人邮箱账号、邮箱密码
+        server.sendmail(my_sender,[my_user,],msg.as_string())  # 括号中对应的是发件人邮箱账号、收件人邮箱账号、发送邮件
+        server.quit()  # 关闭连接
+    except Exception:  # 如果 try 中的语句没有执行，则会执行下面的 ret=False
+        log("邮件发送失败")
+    else: print("邮件发送成功")
+
+# server酱通知
+def sendServerChan(msg):
+    log('正在发送Server酱。。。')
+    res = requests.post(url='https://sc.ftqq.com/{0}.send'.format(config['Info']['ServerChan']),
+                            data={'text': title_text, 'desp': getTimeStr() + "\n" + str(msg)})
+    code = res.json()['errmsg']
+    if code == 'success':
+        log('发送Server酱通知成功。。。')
+    else:
+        log('发送Server酱通知失败。。。')
+        log('Server酱返回结果'+code)
+
+# Qmsg酱通知
+def sendQmsgChan(msg):
+    log('正在发送Qmsg酱。。。')
+    res = requests.post(url='https://qmsg.zendee.cn:443/send/{0}'.format(config['Info']['Qsmg']),
+                            data={'msg': title_text + '\n时间：' + getTimeStr() + "\n 返回结果：" + str(msg)})
+    code = res.json()['success']
+    if code:
+        log('发送Qmsg酱通知成功。。。')
+    else:
+        log('发送Qmsg酱通知失败。。。')
+        log('Qmsg酱返回结果'+code)
+
+# 综合提交
+def InfoSubmit(msg, send=None):
+    if(None != send):
+        if(config['Info']['Email']['enable']): sendEmail(send,msg)
+        else: sendMessage(send, msg)
+    if(config['Info']['ServerChan']): sendServerChan(msg)
+    if(config['Info']['Qsmg']): sendQmsgChan(msg)
+
+
 def main_handler(event, context):
     try:
         for user in config['users']:
@@ -285,6 +351,7 @@ def main_handler(event, context):
                 params = queryForm(session, apis)
                 if str(params) == 'None':
                     log('获取最新待填写问卷失败，可能是辅导员还没有发布。。。')
+                    InfoSubmit('没有新问卷')
                     exit(-1)
                 log('查询最新待填写问卷成功。。。')
                 log('正在自动填写问卷。。。')
@@ -295,19 +362,22 @@ def main_handler(event, context):
                                  params['schoolTaskWid'], form, session, apis['host'])
                 if msg == 'SUCCESS':
                     log('自动提交成功！')
-                    sendMessage(user['user']['email'], '自动提交成功！')
+                    InfoSubmit('自动提交成功！', user['user']['email'])
                 elif msg == '该收集已填写无需再次填写':
                     log('今日已提交！')
+                    # InfoSubmit('今日已提交！', user['user']['email'])
+                    InfoSubmit('今日已提交！')
                 else:
                     log('自动提交失败。。。')
                     log('错误是' + msg)
-                    sendMessage(user['user']['email'], '自动提交失败！错误是' + msg)
+                    InfoSubmit('自动提交失败！错误是' + msg, user['user']['email'])
                     exit(-1)
             else:
                 log('模拟登陆失败。。。')
                 log('原因可能是学号或密码错误，请检查配置后，重启脚本。。。')
                 exit(-1)
     except Exception as e:
+        InfoSubmit("出现问题了！"+str(e))
         raise e
     else:
         return 'success'
