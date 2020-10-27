@@ -296,6 +296,10 @@
             <td>cqmu</td>
             <td>CLOUD</td>
         </tr>
+        <tr>
+            <td>太原理工大学</td>
+            <td>tyut</td>
+            <td>CLOUD</td>
     </tbody>
 </table>
 
