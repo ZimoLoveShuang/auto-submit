@@ -84,11 +84,11 @@ cpdaily:
         value: 是
        
 Info:
-  ServerChan: SCU21835Tb22c7038c8c9786152eda22f3dd85ff15a8433cf69ca6
-  Qsmg: e99a51cc4de18da360ad03f278b44147
+  ServerChan: # 填写Server酱的SCKEY
+  Qsmg: # 填写Qsmg酱的SCKEY
   Email:
     enable: true
-    server: smtp.exmail.qq.com
-    port: 465
-    account: 'admin@cha.moe'
-    password: 'mVXLTneBGjzLAGLP'
+    server: smtp.exmail.qq.com # 填写邮件的smtp服务器
+    port: 465 # 填写邮件服务器的端口号
+    account: '' # 邮件服务器登录用户名
+    password: '' # 邮件服务器登录密码
