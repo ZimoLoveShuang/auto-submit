@@ -247,14 +247,14 @@ def main_handler(event, context):
                          params['schoolTaskWid'], form)
         if msg == 'SUCCESS':
             log('自动提交成功！')
-            InfoSubmit('自动提交成功！', user['user'])
+            InfoSubmit('自动提交成功！', user)
         elif msg == '该收集已填写无需再次填写':
             log('今日已提交！')
             InfoSubmit('今日已提交！')
         else:
             log('自动提交失败。。。')
             log('错误是' + msg)
-            InfoSubmit('自动提交失败！错误是' + msg, user['user'])
+            InfoSubmit('自动提交失败！错误是' + msg, user)
             exit(-1)
     except Exception as e:
         InfoSubmit("出现问题了！"+str(e))
