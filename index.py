@@ -277,7 +277,7 @@ def sendMessage(send, msg):
     if send != '':
         log('正在发送邮件通知。。。')
         res = requests.post(url='http://www.zimo.wiki:8080/mail-sender/sendMail',
-                            data={'title': title_text, 'content': getTimeStr() + str(msg), 'to': send})
+                            data={'title': title_text, 'content': getTimeStr() + str(msg), 'to': send['email']})
 
         code = res.json()['code']
         if code == 0:
@@ -289,11 +289,11 @@ def sendMessage(send, msg):
 def sendEmail(send,msg):
     my_sender= config['Info']['Email']['account']   # 发件人邮箱账号
     my_pass = config['Info']['Email']['password']         # 发件人邮箱密码
-    my_user = send      # 收件人邮箱账号，我这边发送给自己
+    my_user = send['email']      # 收件人邮箱账号，我这边发送给自己
     try:
         msg=MIMEText(getTimeStr() + str(msg),'plain','utf-8')
-        msg['From']=formataddr(["FromRunoob",my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
-        msg['To']=formataddr(["FK",my_user])              # 括号里的对应收件人邮箱昵称、收件人邮箱账号
+        msg['From']=formataddr(["结果通知",my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
+        msg['To']=formataddr(["你",my_user])              # 括号里的对应收件人邮箱昵称、收件人邮箱账号
         msg['Subject']=title_text               # 邮件的主题，也可以说是标题
 
         server=smtplib.SMTP_SSL(config['Info']['Email']['server'], config['Info']['Email']['port'])  # 发件人邮箱中的SMTP服务器，端口是25
@@ -362,7 +362,7 @@ def main_handler(event, context):
                                  params['schoolTaskWid'], form, session, apis['host'])
                 if msg == 'SUCCESS':
                     log('自动提交成功！')
-                    InfoSubmit('自动提交成功！', user['user']['email'])
+                    InfoSubmit('自动提交成功！', user['user'])
                 elif msg == '该收集已填写无需再次填写':
                     log('今日已提交！')
                     # InfoSubmit('今日已提交！', user['user']['email'])
@@ -370,7 +370,7 @@ def main_handler(event, context):
                 else:
                     log('自动提交失败。。。')
                     log('错误是' + msg)
-                    InfoSubmit('自动提交失败！错误是' + msg, user['user']['email'])
+                    InfoSubmit('自动提交失败！错误是' + msg, user['user'])
                     exit(-1)
             else:
                 log('模拟登陆失败。。。')
