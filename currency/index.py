@@ -4,11 +4,11 @@ from login import *
 
 ############配置############
 Cookies = {
-    'acw_tc': '',
-    'MOD_AUTH_CAS': '',
+    'acw_tc': '需要填写内容！！！',
+    'MOD_AUTH_CAS': '需要填写内容！！！',
 }
-sessionToken = ''
-CpdailyInfo = ''
+sessionToken = '需要填写内容！！！'
+CpdailyInfo = '需要填写内容！！！'
 ############配置############
 
 # 全局
