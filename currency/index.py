@@ -68,6 +68,7 @@ def fillForm(form):
             default = config['cpdaily']['defaults'][sort - 1]['default']
             if formItem['title'] != default['title']:
                 log('第%d个默认配置不正确，请检查' % sort)
+                log(formItem['title'] + default['title'])
                 exit(-1)
             # 文本直接赋值
             if formItem['fieldType'] == 1:
@@ -158,18 +159,71 @@ def submitForm(formWid, address, collectWid, schoolTaskWid, form):
     return msg
 
 
+title_text = '今日校园疫结果通知'
+
 # 发送邮件通知
 def sendMessage(send, msg):
     if send != '':
         log('正在发送邮件通知。。。')
         res = requests.post(url='http://www.zimo.wiki:8080/mail-sender/sendMail',
-                            data={'title': '今日校园疫情上报自动提交结果通知', 'content': getTimeStr() + str(msg), 'to': send})
+                            data={'title': title_text, 'content': getTimeStr() + str(msg), 'to': send['email']})
+
         code = res.json()['code']
         if code == 0:
             log('发送邮件通知成功。。。')
         else:
             log('发送邮件通知失败。。。')
             log(res.json())
+
+def sendEmail(send,msg):
+    my_sender= config['Info']['Email']['account']   # 发件人邮箱账号
+    my_pass = config['Info']['Email']['password']         # 发件人邮箱密码
+    my_user = send['email']      # 收件人邮箱账号，我这边发送给自己
+    try:
+        msg=MIMEText(getTimeStr() + str(msg),'plain','utf-8')
+        msg['From']=formataddr(["结果通知",my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
+        msg['To']=formataddr(["你",my_user])              # 括号里的对应收件人邮箱昵称、收件人邮箱账号
+        msg['Subject']=title_text               # 邮件的主题，也可以说是标题
+
+        server=smtplib.SMTP_SSL(config['Info']['Email']['server'], config['Info']['Email']['port'])  # 发件人邮箱中的SMTP服务器，端口是25
+        server.login(my_sender, my_pass)  # 括号中对应的是发件人邮箱账号、邮箱密码
+        server.sendmail(my_sender,[my_user,],msg.as_string())  # 括号中对应的是发件人邮箱账号、收件人邮箱账号、发送邮件
+        server.quit()  # 关闭连接
+    except Exception:  # 如果 try 中的语句没有执行，则会执行下面的 ret=False
+        log("邮件发送失败")
+    else: print("邮件发送成功")
+
+# server酱通知
+def sendServerChan(msg):
+    log('正在发送Server酱。。。')
+    res = requests.post(url='https://sc.ftqq.com/{0}.send'.format(config['Info']['ServerChan']),
+                            data={'text': title_text, 'desp': getTimeStr() + "\n" + str(msg)})
+    code = res.json()['errmsg']
+    if code == 'success':
+        log('发送Server酱通知成功。。。')
+    else:
+        log('发送Server酱通知失败。。。')
+        log('Server酱返回结果'+code)
+
+# Qmsg酱通知
+def sendQmsgChan(msg):
+    log('正在发送Qmsg酱。。。')
+    res = requests.post(url='https://qmsg.zendee.cn:443/send/{0}'.format(config['Info']['Qsmg']),
+                            data={'msg': title_text + '\n时间：' + getTimeStr() + "\n 返回结果：" + str(msg)})
+    code = res.json()['success']
+    if code:
+        log('发送Qmsg酱通知成功。。。')
+    else:
+        log('发送Qmsg酱通知失败。。。')
+        log('Qmsg酱返回结果'+code)
+
+# 综合提交
+def InfoSubmit(msg, send=None):
+    if(None != send):
+        if(config['Info']['Email']['enable']): sendEmail(send,msg)
+        else: sendMessage(send, msg)
+    if(config['Info']['ServerChan']): sendServerChan(msg)
+    if(config['Info']['Qsmg']): sendQmsgChan(msg)
 
 
 # 腾讯云函数启动函数
@@ -182,6 +236,7 @@ def main_handler(event, context):
         params = queryForm()
         if str(params) == 'None':
             log('获取最新待填写问卷失败，可能是辅导员还没有发布。。。')
+            InfoSubmit('没有新问卷')
             exit(-1)
         log('查询最新待填写问卷成功。。。')
         log('正在自动填写问卷。。。')
@@ -192,16 +247,18 @@ def main_handler(event, context):
                          params['schoolTaskWid'], form)
         if msg == 'SUCCESS':
             log('自动提交成功！')
-            sendMessage(user['email'], '自动提交成功！')
+            InfoSubmit('自动提交成功！', user)
         elif msg == '该收集已填写无需再次填写':
             log('今日已提交！')
+            InfoSubmit('今日已提交！')
         else:
             log('自动提交失败。。。')
             log('错误是' + msg)
-            sendMessage(user['email'], '自动提交失败！错误是' + msg)
+            InfoSubmit('自动提交失败！错误是' + msg, user)
             exit(-1)
-    except:
-        return 'auto submit fail.'
+    except Exception as e:
+        InfoSubmit("出现问题了！"+str(e))
+        return e
     else:
         return 'auto submit success.'
 
