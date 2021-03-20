@@ -1,0 +1,6 @@
+author: 若离QQ：2909998156
+
+# 腾讯云OCR的密钥，需要登陆腾讯云并打开 “访问密钥” 里对应的Id和Key
+# 本OCR用于登陆的验证码解析
+SecretId: ''
+SecretKey: ''

@@ -1,0 +1,80 @@
+author: 若离QQ：2909998156
+#用户组配置
+users:
+  # 单个用户配置
+  # 以下配置为签到配置的模板，这里是使用的武汉船舶职业技术学院
+  - user:
+      # 任务类型（收集：0、签到：1、查寝2）
+      type: 1
+      #username 学号或者工号
+      username: ''
+      #password 密码
+      password: ''
+      #address 地址，定位信息
+      address: 中国湖北省武汉市汉阳区滨湖路
+      #email 接受通知消息的邮箱，通知功能暂时未写
+      email: @qq.com
+      #school 学校全称
+      schoolName: 武汉船舶职业技术学院
+      # 附上经纬度查询地址：https://jingweidu.bmcx.com
+      #lon 经度
+      lon: 114.244845
+      #lat 纬度
+      lat: 30.574166
+      #abnormalReason 反馈信息
+      abnormalReason: ''
+      #photo 签到照片，不需要可不填，或者直接删除
+      photo: 1.jpg
+      # 是否检查表单的标题（1代表检查，0代表不检查）
+      checkTitle: 1
+      # 表单信息
+      forms:
+        - form:
+            title: 今天你的体温是多少？
+            value: 37.2℃及以下
+        - form:
+            title: 今天你的身体状况是？
+            value: 健康
+  #多用户配置，将下面的注释去掉即可，如果有表单内容有图片，不建议使用多用户配置
+  # 这里是信息收集模板
+  # 这里默认使用的宜宾学院的配置模板，其他学校请自行修改yml
+  - user:
+        # 任务类型（收集：0、签到：1、查寝2）
+        type: 0
+        # 学校名称
+        schoolName: '宜宾学院'
+        # 账号
+        username: ''
+        # 密码
+        password: ''
+        # 定位位置信息
+        address:
+        # 经纬度信息
+        lon: 104.683846
+        #经纬度信息
+        lat: 28.817335
+        # 是否检查表单的标题（1代表检查，0代表不检查）
+        checkTitle: 1
+        # 表单信息
+        forms:
+            - form:
+                  title: 今日具体所在地
+                  value: 四川省/宜宾市/翠屏区
+            - form:
+                  title: 是否在校
+                  value: 是
+            - form:
+                  title: 上午体温
+                  value: '36.2'
+            - form:
+                  title: 下午体温
+                  value: '36.2'
+            - form:
+                  title: 晚上体温
+                  value: '36.5'
+            - form:
+                  title: 身体状况
+                  value: 身体健康
+            - form:
+                  title: 是否今日返校？
+                  value: 否
