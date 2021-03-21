@@ -24,7 +24,7 @@ users:
       #abnormalReason 反馈信息
       abnormalReason: ''
       #photo 签到照片，不需要可不填，或者直接删除
-      photo: 1.jpg
+      photo: sign.jpg
       # 是否检查表单的标题（1代表检查，0代表不检查）
       checkTitle: 1
       # 表单信息

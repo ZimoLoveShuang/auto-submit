@@ -38,15 +38,23 @@
 
 #### 6、关于依赖
 
-1. 腾讯云的云函数已经拥有了自己的终端，那么我们不再需要创建层了，请将`今日校园`文件夹里的代码打包成`zip`并上传到腾讯云，然后需要将`requirements.txt`一并上传上去，最后到`requirements.txt`目录执行以下命令
+1. 腾讯云的云函数已经拥有了自己的终端，那么我们不再需要创建层了，请将`今日校园`文件夹里的代码打包成`zip`并上传到腾讯云，然后需要将`requirements.txt`一并上传上去，最后到`requirements.txt`目录（一般情况应该也就是上传后的`src`目录里）执行以下命令
 
-   `pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple`
+   （腾讯云函数新版本编辑器，下方有个终端，打开它，并且执行`cd ./src`即可进入到`src`目录）
+
+   `pip install -r requirements.txt -t ./ -i https://mirrors.aliyun.com/pypi/simple`
 
    当然，盲猜你们都是`python3`，那么请使用`pip3`代替`pip`
 
-2. 如果你是阿里云，先将`依赖.zip`解压到`依赖`文件夹，那么请将`今日校园`文件夹里的所有文件及代码全部复制到`依赖`文件夹。并且将整个`依赖`文件夹打包成`zip`格式一并上传到阿里云。
+   也就是
 
-3. 如果你是本地环境，那么请直接进入到`requirements.txt `对应目录执行腾讯云函数需要执行的命令即可。
+   `pip3 install -r requirements.txt -t ./ -i https://mirrors.aliyun.com/pypi/simple`
+
+2. 如果你是阿里云，先将`依赖.zip`解压到`依赖`文件夹，然后将`今日校园`文件夹里的所有文件及代码全部复制到`依赖`文件夹。并且重新将整个`依赖`文件夹打包成`zip`格式一并上传到阿里云。
+
+3. 如果你是本地环境，那么请直接进入到`requirements.txt `对应目录执行命令
+
+   `pip3 install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple`
 
 #### 7、食用方法
 
