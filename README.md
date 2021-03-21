@@ -14,7 +14,7 @@
 
 如果你能确保你的登陆不需要验证码，那么请在这里随意填写
 
-并且需要配置路径`今日校园/login/system.config`里的`SecretId`以及`SecretKey`
+并且需要配置路径`今日校园/login/system.yml`里的`SecretId`以及`SecretKey`
 
 **当然**，如果你能确保你的登陆不需要验证码，那么请在这里随意填写
 
