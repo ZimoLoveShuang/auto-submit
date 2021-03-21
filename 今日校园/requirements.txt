@@ -6,3 +6,4 @@ beautifulsoup4==4.9.3
 pycryptodome==3.10.1
 pyDes==2.0.1
 PyYAML==5.4.1
+lxml==4.6.2
