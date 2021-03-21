@@ -15,7 +15,7 @@ from io import BytesIO
 import random
 
 from urllib3.exceptions import InsecureRequestWarning
-
+from login.Utils import Utils
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
@@ -29,20 +29,11 @@ class casLogin:
         self.session = session
 
     # 判断是否需要验证码
-    def getNeedcaptchaUrl(self):
+    def getNeedCaptchaUrl(self):
         host = re.findall('\w{4,5}\:\/\/.*?\/', self.login_url)[0]
         url = host + 'authserver/needCaptcha.html' + '?username=' + self.username
         flag = self.session.get(url, verify=False).text
         return 'false' != flag and 'False' != flag
-
-    # 读取yml配置
-    def getYmlConfig(yaml_file='system.yml'):
-        file = open(yaml_file, 'r', encoding="utf-8")
-        file_data = file.read()
-        file.close()
-        config = yaml.load(file_data, Loader=yaml.FullLoader)
-        return dict(config)
-
     # 获取验证码并通过腾讯ocr解析
     def getCodeFromImg(self):
         imgUrl = self.host + 'authserver/captcha.html'
@@ -51,7 +42,7 @@ class casLogin:
         imgCode = str(base64.b64encode(BytesIO(response.content).read()), encoding='utf-8')
         # print(imgCode)
         try:
-            cred = credential.Credential(self.getYmlConfig()['SecretId'], self.getYmlConfig()['SecretKey'])
+            cred = credential.Credential(Utils.getYmlConfig()['SecretId'], Utils.getYmlConfig()['SecretKey'])
             httpProfile = HttpProfile()
             httpProfile.endpoint = "ocr.tencentcloudapi.com"
 
@@ -131,7 +122,7 @@ class casLogin:
                 salt = salt[0]
             else:
                 raise Exception('出错啦！网页中未找到salt')
-        needCaptcha = self.getNeedcaptchaUrl()
+        needCaptcha = self.getNeedCaptchaUrl()
         if needCaptcha:
             code = self.getCodeFromImg()
             params['captchaResponse'] = code

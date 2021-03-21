@@ -4,13 +4,15 @@
 
 #### 1、本地化登陆
 
-目前仅仅完成了部分cas学校的本地模拟登陆
 
-目前仅仅完成了部分cas学校的本地模拟登陆
 
-目前仅仅完成了部分cas学校的本地模拟登陆
+目前仅仅完成了iap以及部分cas学校的登陆
 
-重要的事情说三遍
+腾讯OCR开通地址：[点击这里](https://console.cloud.tencent.com/ocr/overview)
+
+腾讯访问密钥开通地址：[点击这里](https://console.cloud.tencent.com/cam/capi)
+
+如果你能确保你的登陆不需要验证码，那么请在这里随意填写
 
 并且需要配置路径`今日校园/login/system.config`里的`SecretId`以及`SecretKey`
 

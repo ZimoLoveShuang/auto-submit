@@ -13,7 +13,7 @@ users:
       #address 地址，定位信息
       address: 中国湖北省武汉市汉阳区滨湖路
       #email 接受通知消息的邮箱，通知功能暂时未写
-      email: @qq.com
+      email:
       #school 学校全称
       schoolName: 武汉船舶职业技术学院
       # 附上经纬度查询地址：https://jingweidu.bmcx.com

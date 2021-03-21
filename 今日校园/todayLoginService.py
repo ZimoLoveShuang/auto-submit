@@ -5,7 +5,7 @@ import requests
 from urllib3.exceptions import InsecureRequestWarning
 
 from login.casLogin import casLogin
-
+from login.iapLogin import iapLogin
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
@@ -66,7 +66,8 @@ class TodayLoginService:
     # 通过登陆url判断采用哪种登陆方式
     def checkLogin(self):
         if self.login_url.find('/iap') != -1:
-            raise Exception('请联系开发者适配iap登陆')
+            self.loginEntity = iapLogin(self.username, self.password, self.login_url, self.login_host, self.session)
+            self.session.cookies = self.loginEntity.login()
         elif self.login_url.find('cumt.edu.cn') != -1:
             raise Exception('请联系开发者适配登陆')
         elif self.login_url.find('henu.edu.cn') != -1:

@@ -13,9 +13,9 @@ def getYmlConfig(yaml_file='config.yml'):
 
 
 def main():
-    try:
-        config = getYmlConfig()
-        for user in config['users']:
+    config = getYmlConfig()
+    for user in config['users']:
+        try:
             today = TodayLoginService(user['user'])
             today.login()
             # 登陆成功，通过type判断当前属于 信息收集、签到、查寝
@@ -35,8 +35,8 @@ def main():
                 sign.fillForm()
                 msg = sign.submitForm()
                 print(msg)
-    except Exception as e:
-        print(str(e))
+        except Exception as e:
+            print(str(e))
 
 
 # 阿里云的入口函数
