@@ -5,15 +5,15 @@ users:
   # 以下配置为签到配置的模板，这里是使用的武汉船舶职业技术学院
   - user:
       # 任务类型（收集：0、签到：1、查寝2）
-      type: 1
+      type: 0
       #username 学号或者工号
       username: ''
       #password 密码
       password: ''
       #address 地址，定位信息
-      address: 中国湖北省武汉市汉阳区滨湖路
+      address: ''
       #email 接受通知消息的邮箱，通知功能暂时未写
-      email:
+      email: ''
       #school 学校全称
       schoolName: 武汉船舶职业技术学院
       # 附上经纬度查询地址：https://jingweidu.bmcx.com

@@ -121,13 +121,16 @@ class casLogin:
             if (len(salt) == 1):
                 salt = salt[0]
             else:
-                raise Exception('出错啦！网页中未找到salt')
-        needCaptcha = self.getNeedCaptchaUrl()
-        if needCaptcha:
-            code = self.getCodeFromImg()
-            params['captchaResponse'] = code
+                salt = False
         params['username'] = self.username
-        params['password'] = self.encryptAES(self.password, salt)
+        if not salt:
+            params['password'] = self.password
+        else:
+            params['password'] = self.encryptAES(self.password, salt)
+            needCaptcha = self.getNeedCaptchaUrl()
+            if needCaptcha:
+                code = self.getCodeFromImg()
+                params['captchaResponse'] = code
         data = self.session.post(self.login_url, params=params, allow_redirects=False)
         # 如果等于302强制跳转，代表登陆成功
         if data.status_code == 302:
