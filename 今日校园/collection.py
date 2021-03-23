@@ -73,7 +73,7 @@ class Collection:
                         if fieldItem['content'] in userItems:
                             formItem['value'] += fieldItem['content'] + ' '
                         else:
-                            formItem.remove(fieldItem)
+                            fieldItems.remove(fieldItem)
                 if formItem['fieldType'] == 4:
                     pass
                 index += 1
