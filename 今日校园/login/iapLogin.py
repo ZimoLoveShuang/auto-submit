@@ -29,38 +29,6 @@ class iapLogin:
                                  verify=False).json()
         return data['needCaptcha']
 
-    # 获取验证码并解析
-    def getCodeFromImg(self):
-        imgUrl = f'{self.host}iap/generateCaptcha?ltId={self.ltInfo["result"]["_lt"]}'
-        response = self.session.get(imgUrl, verify=False)  # 将这个图片保存在内存
-        # 得到这个图片的base64编码
-        imgCode = str(base64.b64encode(BytesIO(response.content).read()), encoding='utf-8')
-        try:
-            cred = credential.Credential(Utils.getYmlConfig()['SecretId'], Utils.getYmlConfig()['SecretKey'])
-            httpProfile = HttpProfile()
-            httpProfile.endpoint = "ocr.tencentcloudapi.com"
-
-            clientProfile = ClientProfile()
-            clientProfile.httpProfile = httpProfile
-            client = ocr_client.OcrClient(cred, "ap-beijing", clientProfile)
-
-            req = models.GeneralBasicOCRRequest()
-            params = {
-                "ImageBase64": imgCode
-            }
-            req.from_json_string(json.dumps(params))
-            resp = client.GeneralBasicOCR(req)
-            codeArray = json.loads(resp.to_json_string())['TextDetections']
-            code = ''
-            for item in codeArray:
-                code += item['DetectedText'].replace(' ', '')
-            if len(code) == 4:
-                return code
-            else:
-                return self.getCodeFromImg()
-        except TencentCloudSDKException as err:
-            raise Exception('验证码识别出现问题了' + str(err.message))
-
     def login(self):
         params = {}
         self.ltInfo = self.session.post(f'{self.host}iap/security/lt', data=json.dumps({})).json()
@@ -72,8 +40,8 @@ class iapLogin:
         params['password'] = self.password
         needCaptcha = self.getNeedCaptchaUrl()
         if needCaptcha:
-            print('正在解析验证码...')
-            code = self.getCodeFromImg()
+            imgUrl = f'{self.host}iap/generateCaptcha?ltId={self.ltInfo["result"]["_lt"]}'
+            code = Utils.getCodeFromImg(self.session, imgUrl)
             params['captcha'] = code
         else:
             params['captcha'] = ''

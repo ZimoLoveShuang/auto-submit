@@ -1,19 +1,6 @@
-import json
 import re
-
 import requests
-from Crypto.Cipher import AES
 from bs4 import BeautifulSoup
-from tencentcloud.common import credential
-from tencentcloud.common.profile.client_profile import ClientProfile
-from tencentcloud.common.profile.http_profile import HttpProfile
-from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
-from tencentcloud.ocr.v20181119 import ocr_client, models
-import base64
-import yaml
-from io import BytesIO
-import random
-
 from urllib3.exceptions import InsecureRequestWarning
 from login.Utils import Utils
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -34,67 +21,6 @@ class casLogin:
         url = host + 'authserver/needCaptcha.html' + '?username=' + self.username
         flag = self.session.get(url, verify=False).text
         return 'false' != flag and 'False' != flag
-    # 获取验证码并通过腾讯ocr解析
-    def getCodeFromImg(self):
-        imgUrl = self.host + 'authserver/captcha.html'
-        response = self.session.get(imgUrl, verify=False)  # 将这个图片保存在内存
-        # 得到这个图片的base64编码
-        imgCode = str(base64.b64encode(BytesIO(response.content).read()), encoding='utf-8')
-        # print(imgCode)
-        try:
-            cred = credential.Credential(Utils.getYmlConfig()['SecretId'], Utils.getYmlConfig()['SecretKey'])
-            httpProfile = HttpProfile()
-            httpProfile.endpoint = "ocr.tencentcloudapi.com"
-
-            clientProfile = ClientProfile()
-            clientProfile.httpProfile = httpProfile
-            client = ocr_client.OcrClient(cred, "ap-beijing", clientProfile)
-
-            req = models.GeneralBasicOCRRequest()
-            params = {
-                "ImageBase64": imgCode
-            }
-            req.from_json_string(json.dumps(params))
-            resp = client.GeneralBasicOCR(req)
-            codeArray = json.loads(resp.to_json_string())['TextDetections']
-            code = ''
-            for item in codeArray:
-                code += item['DetectedText'].replace(' ', '')
-            if len(code) == 4:
-                return code
-            else:
-                return self.getCodeFromImg()
-        except TencentCloudSDKException as err:
-            raise Exception('验证码识别出现问题了' + str(err.message))
-
-    # 获取指定长度的随机字符
-    def randString(self, length):
-        baseString = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678"
-        data = ''
-        for i in range(length):
-            data += baseString[random.randint(0, len(baseString) - 1)]
-        return data
-
-    # aes加密的实现
-    def encryptAES(self, password, key):
-        randStrLen = 64
-        randIvLen = 16
-        ranStr = self.randString(randStrLen)
-        ivStr = self.randString(randIvLen)
-        aes = AES.new(bytes(key, encoding='utf-8'), AES.MODE_CBC, bytes(ivStr, encoding="utf8"))
-        data = ranStr + password
-
-        text_length = len(data)
-        amount_to_pad = AES.block_size - (text_length % AES.block_size)
-        if amount_to_pad == 0:
-            amount_to_pad = AES.block_size
-        pad = chr(amount_to_pad)
-        data = data + pad * amount_to_pad
-
-        text = aes.encrypt(bytes(data, encoding='utf-8'))
-        text = base64.encodebytes(text)
-        text = text.decode('utf-8').strip()
-        return text
 
     def login(self):
         html = self.session.get(self.login_url, verify=False).text
@@ -126,16 +52,16 @@ class casLogin:
         if not salt:
             params['password'] = self.password
         else:
-            params['password'] = self.encryptAES(self.password, salt)
-            needCaptcha = self.getNeedCaptchaUrl()
-            if needCaptcha:
-                code = self.getCodeFromImg()
+            params['password'] = Utils.encryptAES(self.password, salt)
+            if self.getNeedCaptchaUrl():
+                imgUrl = self.host + 'authserver/captcha.html'
+                code = Utils.getCodeFromImg(self.session, imgUrl)
                 params['captchaResponse'] = code
         data = self.session.post(self.login_url, params=params, allow_redirects=False)
         # 如果等于302强制跳转，代表登陆成功
         if data.status_code == 302:
             jump_url = data.headers['Location']
-            self.session.post(jump_url)
+            self.session.post(jump_url, verify=False)
             return self.session.cookies
         elif data.status_code == 200:
             data = data.text
@@ -143,4 +69,4 @@ class casLogin:
             msg = soup.select('#errorMsg')[0].get_text()
             raise Exception(msg)
         else:
-            raise Exception('教务系统出现了问题啦！返回状态码：' + data.status_code)
+            raise Exception('教务系统出现了问题啦！返回状态码：' + str(data.status_code))
