@@ -5,6 +5,7 @@ from actions.collection import Collection
 from actions.workLog import workLog
 from actions.rlMessage import RlMessage
 
+
 def getYmlConfig(yaml_file='config.yml'):
     file = open(yaml_file, 'r', encoding="utf-8")
     file_data = file.read()
@@ -28,6 +29,7 @@ def main():
                 collection.queryForm()
                 collection.fillForm()
                 msg = collection.submitForm()
+                print(msg)
                 msg = rl.sendMail('[maybe]', msg)
                 print(msg)
             elif user['user']['type'] == 1:
@@ -37,6 +39,7 @@ def main():
                 sign.getDetailTask()
                 sign.fillForm()
                 msg = sign.submitForm()
+                print(msg)
                 msg = rl.sendMail('[maybe]', msg)
                 print(msg)
             elif user['user']['type'] == 3:
@@ -44,14 +47,15 @@ def main():
                 work.checkHasLog()
                 work.getFormsByWids()
                 work.fillForms()
-                msg =work.submitForms()
+                msg = work.submitForms()
+                print(msg)
                 msg = rl.sendMail('[maybe]', msg)
                 print(msg)
         except Exception as e:
             msg = str(e)
+            print(msg)
             msg = rl.sendMail('[error]', msg)
             print(msg)
-
 
 
 # 阿里云的入口函数
