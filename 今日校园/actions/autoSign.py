@@ -103,15 +103,24 @@ class AutoSign:
                         raise Exception(
                             f'\r\n第{i + 1}个配置出错了\r\n您的标题为：{userItem["title"]}\r\n系统的标题为：{extraField["title"]}')
                 extraFieldItems = extraField['extraFieldItems']
+                flag = False
                 for extraFieldItem in extraFieldItems:
+                    if extraFieldItem['isSelected']:
+                        data = extraFieldItem['content']
+                    # print(extraFieldItem)
                     if extraFieldItem['content'] == userItem['value']:
+                        flag =True
                         extraFieldItemValue = {'extraFieldItemValue': userItem['value'],
                                                'extraFieldItemWid': extraFieldItem['wid']}
-                        # 其他 额外的文本
-                        if extraFieldItem['isOtherItems'] == 1:
-                            extraFieldItemValue = {'extraFieldItemValue': userItem['other'],
-                                                   'extraFieldItemWid': extraFieldItem['wid']}
                         extraFieldItemValues.append(extraFieldItemValue)
+                    # 其他 额外的文本
+                    if extraFieldItem['isOtherItems'] == 1:
+                        flag = True
+                        extraFieldItemValue = {'extraFieldItemValue': userItem['other'],
+                                               'extraFieldItemWid': extraFieldItem['wid']}
+                        extraFieldItemValues.append(extraFieldItemValue)
+                if not flag:
+                    raise Exception(f'\r\n第{ i + 1 }个配置出错了\r\n表单未找到你设置的值：{userItem["value"]}\r\n，你上次系统选的值为：{ data }')
             self.form['extraFieldItems'] = extraFieldItemValues
         self.form['signInstanceWid'] = self.task['signInstanceWid']
         self.form['longitude'] = self.userInfo['lon']
@@ -120,6 +129,7 @@ class AutoSign:
         self.form['abnormalReason'] = self.userInfo['abnormalReason']
         self.form['position'] = self.userInfo['address']
         self.form['uaIsCpadaily'] = True
+        print(self.form)
 
     # DES加密
     def DESEncrypt(self, s, key='b3L26XNL'):

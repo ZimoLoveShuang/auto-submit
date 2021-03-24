@@ -1,8 +1,9 @@
 import yaml
 from todayLoginService import TodayLoginService
-from autoSign import AutoSign
-from collection import Collection
-
+from actions.autoSign import AutoSign
+from actions.collection import Collection
+from actions.workLog import workLog
+from actions.rlMessage import RlMessage
 
 def getYmlConfig(yaml_file='config.yml'):
     file = open(yaml_file, 'r', encoding="utf-8")
@@ -15,6 +16,7 @@ def getYmlConfig(yaml_file='config.yml'):
 def main():
     config = getYmlConfig()
     for user in config['users']:
+        rl = RlMessage(user['email'])
         try:
             today = TodayLoginService(user['user'])
             today.login()
@@ -26,6 +28,7 @@ def main():
                 collection.queryForm()
                 collection.fillForm()
                 msg = collection.submitForm()
+                msg = rl.sendMail('[maybe]', msg)
                 print(msg)
             elif user['user']['type'] == 1:
                 # 以下代码是签到的代码
@@ -34,9 +37,20 @@ def main():
                 sign.getDetailTask()
                 sign.fillForm()
                 msg = sign.submitForm()
+                msg = rl.sendMail('[maybe]', msg)
+                print(msg)
+            elif user['user']['type'] == 3:
+                work = workLog(today, user['user'])
+                work.checkHasLog()
+                work.getFormsByWids()
+                work.fillForms()
+                msg =work.submitForms()
+                msg = rl.sendMail('[maybe]', msg)
                 print(msg)
         except Exception as e:
-            print(str(e))
+            msg = str(e)
+            msg = rl.sendMail('[error]', msg)
+            print(msg)
 
 
 # 阿里云的入口函数
