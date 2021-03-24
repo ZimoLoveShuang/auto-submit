@@ -16,7 +16,7 @@ def getYmlConfig(yaml_file='config.yml'):
 def main():
     config = getYmlConfig()
     for user in config['users']:
-        rl = RlMessage(user['email'])
+        rl = RlMessage(user['user']['email'])
         try:
             today = TodayLoginService(user['user'])
             today.login()
