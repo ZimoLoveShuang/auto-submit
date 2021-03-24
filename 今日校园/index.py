@@ -16,8 +16,8 @@ def getYmlConfig(yaml_file='config.yml'):
 def main():
     config = getYmlConfig()
     for user in config['users']:
-        # rl = RlMessage(user['user']['email'])
-        # try:
+        rl = RlMessage(user['user']['email'])
+        try:
             today = TodayLoginService(user['user'])
             today.login()
             # 登陆成功，通过type判断当前属于 信息收集、签到、查寝
@@ -47,10 +47,10 @@ def main():
                 msg =work.submitForms()
                 msg = rl.sendMail('[maybe]', msg)
                 print(msg)
-        # except Exception as e:
-        #     msg = str(e)
-        #     # msg = rl.sendMail('[error]', msg)
-        #     print(msg)
+        except Exception as e:
+            msg = str(e)
+            msg = rl.sendMail('[error]', msg)
+            print(msg)
 
 
 

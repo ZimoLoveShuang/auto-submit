@@ -10,6 +10,8 @@ class RlMessage:
     # 发送邮件消息
     def sendMail(self, status, msg):
         # 若离邮件api， 将会存储消息到数据库，并保存1周以供查看，请勿乱用，谢谢合作
+        if self.mail == '':
+            return False
         api = 'http://mail.ruoli.cc/api/sendMail'
         params = {
             'to': self.mail,

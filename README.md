@@ -80,6 +80,7 @@ PS:正在尝试着自己借助于 [YuQ](https://yuqworks.gitee.io/yuq-doc/#/) �
 
 #### 9、更新日志
 
+- 新增邮件推送开关，当`config.yml`中的`- user`里的`email`为如下格式：`email: ''`，将不推送邮件 `v1.1.0`
 - 新增一个`cas`学校的登陆（河南大学），新增`henuLogin`模块 `v1.0.9`
 - 完成邮件推送功能 `v1.0.8`
 - 修复签到值错误但不提示的bug `v1.0.7`
