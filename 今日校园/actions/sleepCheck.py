@@ -2,30 +2,26 @@ import base64
 import json
 import re
 import uuid
-
-from pyDes import des, CBC, PAD_PKCS5
+from pyDes import PAD_PKCS5, des, CBC
 from requests_toolbelt import MultipartEncoder
 
 from todayLoginService import TodayLoginService
 
 
-class AutoSign:
-    # 初始化签到类
-    def __init__(self, todayLoginService: TodayLoginService, userInfo):
-        self.session = todayLoginService.session
-        self.host = todayLoginService.host
+class sleepCheck:
+    # 初始化信息收集类
+    def __init__(self, todaLoginService: TodayLoginService, userInfo):
+        self.session = todaLoginService.session
+        self.host = todaLoginService.host
         self.userInfo = userInfo
         self.taskInfo = None
-        self.task = None
         self.form = {}
-        self.fileName = None
-
-    # 获取未签到的任务
-    def getUnSignTask(self):
+    # 获取未签到任务
+    def getUnSignedTasks(self):
         headers = self.session.headers
         headers['Content-Type'] = 'application/json'
         # 第一次请求接口获取cookies（MOD_AUTH_CAS）
-        url = f'{self.host}wec-counselor-sign-apps/stu/sign/getStuSignInfosInOneDay'
+        url = f'{self.host}wec-counselor-attendance-apps/student/attendance/getStuAttendacesInOneDay'
         self.session.post(url, headers=headers, data=json.dumps({}), verify=False)
         # 第二次请求接口，真正的拿到具体任务
         res = self.session.post(url, headers=headers, data=json.dumps({}), verify=False).json()
@@ -40,7 +36,7 @@ class AutoSign:
 
     # 获取具体的签到任务详情
     def getDetailTask(self):
-        url = f'{self.host}wec-counselor-sign-apps/stu/sign/detailSignInstance'
+        url = f'{self.host}wec-counselor-attendance-apps/student/attendance/detailSignInstance'
         headers = self.session.headers
         headers['Content-Type'] = 'application/json'
         res = self.session.post(url, headers=headers, data=json.dumps(self.taskInfo), verify=False).json()
@@ -81,55 +77,24 @@ class AutoSign:
         photoUrl = res.json().get('datas')
         return photoUrl
 
+
     # 填充表单
     def fillForm(self):
         # 判断签到是否需要照片
         if self.task['isPhoto'] == 1:
             self.uploadPicture()
             self.form['signPhotoUrl'] = self.getPictureUrl()
-            # self.form['signPhotoUrl'] = 'https://www.campushoy.com/wp-content/uploads/2019/06/cropped-hoy.png'
         else:
             self.form['signPhotoUrl'] = ''
-        self.form['isNeedExtra'] = self.task['isNeedExtra']
-        if self.task['isNeedExtra'] == 1:
-            extraFields = self.task['extraField']
-            userItems = self.userInfo['forms']
-            extraFieldItemValues = []
-            for i in range(len(extraFields)):
-                userItem = userItems[i]['form']
-                extraField = extraFields[i]
-                if self.userInfo['checkTitle'] == 1:
-                    if userItem['title'] != extraField['title']:
-                        raise Exception(
-                            f'\r\n第{i + 1}个配置出错了\r\n您的标题为：{userItem["title"]}\r\n系统的标题为：{extraField["title"]}')
-                extraFieldItems = extraField['extraFieldItems']
-                flag = False
-                for extraFieldItem in extraFieldItems:
-                    if extraFieldItem['isSelected']:
-                        data = extraFieldItem['content']
-                    # print(extraFieldItem)
-                    if extraFieldItem['content'] == userItem['value']:
-                        flag =True
-                        extraFieldItemValue = {'extraFieldItemValue': userItem['value'],
-                                               'extraFieldItemWid': extraFieldItem['wid']}
-                        extraFieldItemValues.append(extraFieldItemValue)
-                    # 其他 额外的文本
-                    if extraFieldItem['isOtherItems'] == 1:
-                        flag = True
-                        extraFieldItemValue = {'extraFieldItemValue': userItem['other'],
-                                               'extraFieldItemWid': extraFieldItem['wid']}
-                        extraFieldItemValues.append(extraFieldItemValue)
-                if not flag:
-                    raise Exception(f'\r\n第{ i + 1 }个配置出错了\r\n表单未找到你设置的值：{userItem["value"]}\r\n，你上次系统选的值为：{ data }')
-            self.form['extraFieldItems'] = extraFieldItemValues
-        self.form['signInstanceWid'] = self.task['signInstanceWid']
+        self.form['signInstanceWid'] = self.taskInfo['signInstanceWid']
         self.form['longitude'] = self.userInfo['lon']
         self.form['latitude'] = self.userInfo['lat']
         self.form['isMalposition'] = self.task['isMalposition']
         self.form['abnormalReason'] = self.userInfo['abnormalReason']
         self.form['position'] = self.userInfo['address']
+        self.form['qrUuid'] = ''
         self.form['uaIsCpadaily'] = True
-        # print(self.form)
+
 
     # DES加密
     def DESEncrypt(self, s, key='b3L26XNL'):
@@ -142,13 +107,13 @@ class AutoSign:
     # 提交签到信息
     def submitForm(self):
         extension = {
-            "lon": self.userInfo['lon'],
             "model": "OPPO R11 Plus",
             "appVersion": "8.1.14",
             "systemVersion": "4.4.4",
             "userId": self.userInfo['username'],
             "systemName": "android",
             "lat": self.userInfo['lat'],
+            "lon": self.userInfo['lon'],
             "deviceId": str(uuid.uuid1())
         }
         headers = {
@@ -161,7 +126,8 @@ class AutoSign:
             'Host': re.findall('//(.*?)/', self.host)[0],
             'Connection': 'Keep-Alive'
         }
-        # print(json.dumps(self.form))
-        res = self.session.post(f'{self.host}wec-counselor-sign-apps/stu/sign/submitSign', headers=headers,
+        print(json.dumps(self.task))
+        print(json.dumps(self.form))
+        res = self.session.post(f'{self.host}wec-counselor-attendance-apps/student/attendance/submitSign', headers=headers,
                                 data=json.dumps(self.form), verify=False).json()
         return res['message']

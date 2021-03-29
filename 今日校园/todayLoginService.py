@@ -7,6 +7,7 @@ from urllib3.exceptions import InsecureRequestWarning
 from login.casLogin import casLogin
 from login.iapLogin import iapLogin
 from login.henuLogin import henuLogin
+from login.currencyLogin import currencyLogin
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
@@ -85,7 +86,8 @@ class TodayLoginService:
         elif self.login_url.find('cuit.edu.cn') != -1:
             raise Exception('请联系开发者适配登陆')
         elif self.login_url.find('hfnu.edu.cn') != -1:
-            raise Exception('请联系开发者适配登陆')
+            self.loginEntity = currencyLogin(self.username, self.password, self.login_url, self.login_host, self.session)
+            self.session.cookies = self.loginEntity.login()
         elif self.login_url.find('hfut.edu.cn') != -1:
             raise Exception('请联系开发者适配登陆')
         elif self.login_url.find('ehall.just.edu.cn') != -1:

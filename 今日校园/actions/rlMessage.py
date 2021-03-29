@@ -19,7 +19,5 @@ class RlMessage:
             'content': msg
         }
         res = requests.post(url=api, params=params).json()
-        if res['code'] != 200:
-            raise Exception(res['msg'])
-
+        return res['msg']
     # 其他通知方式待添加
