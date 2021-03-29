@@ -19,16 +19,18 @@ def main():
     config = getYmlConfig()
     for user in config['users']:
         rl = RlMessage(user['user']['email'])
-        status = 'maybe'
-        if user['debug']:
+        if config['debug']:
             msg = working(user)
         else:
             try:
                 msg = working(user)
+
             except Exception as e:
                 msg = str(e)
-                status = 'error'
-        msg = rl.sendMail(status, msg)
+                print(msg)
+                msg = rl.sendMail('error', msg)
+        print(msg)
+        msg = rl.sendMail('maybe', msg)
 
 def working(user):
     today = TodayLoginService(user['user'])
