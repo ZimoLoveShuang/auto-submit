@@ -2,6 +2,10 @@
 
 
 
+#### 博客教程：[https://blog.ruoli.cc/archives/29.html](https://blog.ruoli.cc/archives/29.html)
+
+#### 视频教程：[https://pan.ruoli.cc/nanjing/video/fucktoday/](https://pan.ruoli.cc/nanjing/video/fucktoday/)
+
 #### 1、本地化登陆
 
 目前仅仅完成了iap以及部分cas学校的登陆
