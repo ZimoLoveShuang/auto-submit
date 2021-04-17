@@ -129,7 +129,7 @@ class AutoSign:
         self.form['abnormalReason'] = self.userInfo['abnormalReason']
         self.form['position'] = self.userInfo['address']
         self.form['uaIsCpadaily'] = True
-        # print(self.form)
+        self.form['signVersion'] ='1.0.0'
 
     # DES加密
     def DESEncrypt(self, s, key='b3L26XNL'):
