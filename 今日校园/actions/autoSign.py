@@ -116,7 +116,7 @@ class AutoSign:
                     # 其他 额外的文本
                     if extraFieldItem['isOtherItems'] == 1:
                         flag = True
-                        extraFieldItemValue = {'extraFieldItemValue': userItem['other'],
+                        extraFieldItemValue = {'extraFieldItemValue': userItem['value'],
                                                'extraFieldItemWid': extraFieldItem['wid']}
                         extraFieldItemValues.append(extraFieldItemValue)
                 if not flag:
