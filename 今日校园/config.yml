@@ -1,5 +1,8 @@
 author: 若离QQ：2909998156
 # 调试模式，用于寻找错误出现的坐标，默认为false
+# 特别提示：调试完成后请记得将debug改为false
+# 特别提示：调试完成后请记得将debug改为false
+# 特别提示：调试完成后请记得将debug改为false
 debug: true
 
 #用户组配置
