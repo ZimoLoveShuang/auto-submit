@@ -1,7 +1,7 @@
 requests==2.25.1
 requests_toolbelt==0.9.1
 tencentcloud_sdk_python==3.0.65
-urllib3==1.26.3
+urllib3==1.26.4
 beautifulsoup4==4.9.3
 pycryptodome==3.10.1
 pyDes==2.0.1
