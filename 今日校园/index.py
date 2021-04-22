@@ -18,7 +18,7 @@ def getYmlConfig(yaml_file='config.yml'):
 def main():
     config = getYmlConfig()
     for user in config['users']:
-        # rl = RlMessage(user['user']['email'])
+        rl = RlMessage(user['user']['email'], config['emailApiUrl'])
         if config['debug']:
             msg = working(user)
         else:
@@ -27,9 +27,9 @@ def main():
             except Exception as e:
                 msg = str(e)
                 print(msg)
-                # msg = rl.sendMail('error', msg)
+                msg = rl.sendMail('error', msg)
         print(msg)
-        # msg = rl.sendMail('maybe', msg)
+        msg = rl.sendMail('maybe', msg)
 
 def working(user):
     today = TodayLoginService(user['user'])
