@@ -18,5 +18,5 @@ requests==2.23.0
 six==1.15.0
 soupsieve==2.0.1
 tzlocal==2.0.0
-urllib3==1.25.8
+urllib3==1.26.5
 webencodings==0.5.1
