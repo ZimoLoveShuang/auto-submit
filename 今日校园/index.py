@@ -18,18 +18,19 @@ def getYmlConfig(yaml_file='config.yml'):
 def main():
     config = getYmlConfig()
     for user in config['users']:
-        rl = RlMessage(user['user']['email'], config['emailApiUrl'])
+        rl = RlMessage(user['user']['email'],user['user']['wx'])
         if config['debug']:
             msg = working(user)
         else:
             try:
                 msg = working(user)
+
             except Exception as e:
                 msg = str(e)
                 print(msg)
-                msg = rl.sendMail('error', msg)
+                msg = rl.sendWX('error', msg)
         print(msg)
-        msg = rl.sendMail('maybe', msg)
+        msg = rl.sendWX('maybe', msg)
 
 def working(user):
     today = TodayLoginService(user['user'])
