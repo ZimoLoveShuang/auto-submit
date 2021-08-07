@@ -7,7 +7,7 @@ from pyDes import des, CBC, PAD_PKCS5
 
 
 # DES加密
-def DESEncrypt(s, key='XCE927=='):
+def DESEncrypt(s, key='b3L26XNL'):
     iv = b"\x01\x02\x03\x04\x05\x06\x07\x08"
     k = des(key, CBC, iv, pad=None, padmode=PAD_PKCS5)
     encrypt_str = k.encrypt(s)
@@ -15,7 +15,7 @@ def DESEncrypt(s, key='XCE927=='):
 
 
 # DES解密
-def DESDecrypt(s, key='XCE927=='):
+def DESDecrypt(s, key='b3L26XNL'):
     s = base64.b64decode(s)
     iv = b"\x01\x02\x03\x04\x05\x06\x07\x08"
     k = des(key, CBC, iv, pad=None, padmode=PAD_PKCS5)
