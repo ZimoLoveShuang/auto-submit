@@ -5,9 +5,9 @@ user:
   tellphone: '13000000000'
   #address 地址，定位信息
   address: 中国广东省深圳市xx区xx街道xx路
-  #email 接受通知消息的邮箱
+  #email 接受通知消息的邮箱（已弃用，可以不填）
   email: 895996939@qq.com
-  #lon 当前位置经度，可以访问http://zuobiao.ay800.com/s/27/index.php获取
+  #lon 当前位置经度，可以访问http://api.map.baidu.com/lbsapi/getpoint/获取
   lon: '116.401969'
   #lat 当前位置纬度
   lat: '39.915599'
@@ -40,4 +40,4 @@ cpdaily:
         value: 否
         
 Info:
-  ServerChan: SCTXXXXXXXXXXXXXXXXXXXX # 填写Server酱的SCKEY
+  ServerChan: SCTXXXXXXXXXXXXXXXXXXXX # 填写Server酱的SCKEY 微信推送结果 详情请看https://sct.ftqq.com/ 
