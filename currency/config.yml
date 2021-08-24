@@ -20,23 +20,23 @@ cpdaily:
     #表单默认选项配置，按顺序，注意，只有标必填项的才处理，不会配置就执行generate.py
     - default:
         title: 今日体温是（℃）
-        type: 1
+        type: '1'
         value: '36.1'
     - default:
         title: 今日是否有发热、咳嗽等症状？
-        type: 2
+        type: '2'
         value: 否
     - default:
         title: 是否有中高风险地区旅居史？
-        type: 2
+        type: '2'
         value: 否
     - default:
         title: 是否被要求隔离
-        type: 2
+        type: '2'
         value: 否
     - default:
         title: 是否为确诊、疑似病例或无症状感染者？
-        type: 2
+        type: '2'
         value: 否
         
 Info:
