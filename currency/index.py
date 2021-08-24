@@ -72,10 +72,10 @@ def fillForm(form):
                 log('第%d个默认配置不正确，请检查' % sort)
                 exit(-1)
             # 文本直接赋值
-            if formItem['fieldType'] == 1:
+            if formItem['fieldType'] == '1':
                 formItem['value'] = default['value']
             # 单选框需要删掉多余的选项
-            if formItem['fieldType'] == 2:
+            if formItem['fieldType'] == '2':
                 # 填充默认值
                 formItem['value'] = default['value']
                 fieldItems = formItem['fieldItems']
@@ -83,7 +83,7 @@ def fillForm(form):
                     if fieldItems[i]['content'] != default['value']:
                         del fieldItems[i]
             # 多选需要分割默认选项值，并且删掉无用的其他选项
-            if formItem['fieldType'] == 3:
+            if formItem['fieldType'] == '3':
                 fieldItems = formItem['fieldItems']
                 defaultValues = default['value'].split(',')
                 for i in range(0, len(fieldItems))[::-1]:
@@ -96,7 +96,7 @@ def fillForm(form):
                     if flag:
                         del fieldItems[i]
             # 图片需要上传到阿里云oss
-            if formItem['fieldType'] == 4:
+            if formItem['fieldType'] == '4':
                 fileName = uploadPicture(default['value'])
                 formItem['value'] = getPictureUrl(fileName)
             log('必填问题%d：' % sort + formItem['title'])
