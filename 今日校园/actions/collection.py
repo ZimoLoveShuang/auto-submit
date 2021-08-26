@@ -2,18 +2,143 @@ import base64
 import json
 import re
 import uuid
+from typing import Optional, List, Text, Callable
+
 from pyDes import PAD_PKCS5, des, CBC
 
 from todayLoginService import TodayLoginService
 
 
+class UserForms:
+    forms: List
+
+    def __init__(self, forms):
+        self.forms = forms
+
+    def getValueByTitle(self, title: str, raiseIfNotFound: bool = False) -> Optional[Text]:
+        """
+        通过问题的标题来查找对应答案
+        :param title: 标题
+        :param raiseIfNotFound: 未找到对应选项时是否抛出异常
+        :return: 答案
+        """
+        if ret := list(filter(lambda x: x['form']['title'] == title, self.forms)):
+            return ret[0]['form']['value']
+
+        if raiseIfNotFound:
+            raise Exception(f"config.yml 中不存在 '{title}' 的答案")
+        else:
+            return None
+
+    def getValueByIndex(self, idx: int) -> str:
+        """
+        通过问题的索引来查找对应答案，适用于 checkTitle 选项为 False 且 getValueByTitle 查找失败的情况
+        :param idx: 索引
+        :return: 答案
+        """
+        try:
+            return self.forms[idx]['form']['value']
+        except IndexError:
+            raise IndexError(f"config.yml 中不存在表单第 [{idx}] 个问题的答案")
+
+
+class FormItem(dict):
+    """
+    表单中的一个问题
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        assert self.get('fieldType'), f"字段读取错误，缺少 fieldType，原始内容：{self}"
+        self.acceptableFieldItems = self['fieldItems']
+
+    @property
+    def isRequired(self) -> bool:
+        return bool(self['isRequired'])
+
+    @property
+    def fieldType(self) -> int:
+        return int(self['fieldType'])
+
+    @property
+    def isTextField(self) -> bool:
+        """
+        是文字型问题
+        :return:
+        """
+        return self.fieldType == 1 or self.fieldType == 5
+
+    @property
+    def isSingleChoiceField(self) -> bool:
+        return self.fieldType == 2
+
+    @property
+    def isMultiChoiceField(self) -> bool:
+        return self.fieldType == 3
+
+    @property
+    def isIgnoredChoiceField(self) -> bool:
+        return self.fieldType == 4
+
+    def getValueSetterByFieldType(self) -> Callable:
+        """
+        根据表单类型取得对应 setter
+        :return:
+        """
+        if self.isTextField:
+            return self._setTextValue
+        elif self.isSingleChoiceField:
+            return self._setSingleChoiceValue
+        elif self.isMultiChoiceField:
+            return self._setMultiChoiceValue
+        elif self.isIgnoredChoiceField:
+            return lambda newValue: None
+        else:
+            raise ValueError(f"未知问题类型，原始数据：{self}")
+
+    @property
+    def value(self) -> Text:
+        return self['value']
+
+    @value.setter
+    def value(self, newValue: Text):
+        setter = self.getValueSetterByFieldType()
+        setter(newValue)
+
+    def _setTextValue(self, newValue: Text):
+        """
+        填充 文本型问题 的答案
+        :param newValue:
+        :return:
+        """
+        self['value'] = newValue
+
+    def _setSingleChoiceValue(self, newValue: Text):
+        """
+        填充 单选型问题 的答案
+        :param newValue:
+        :return:
+        """
+        self['value'] = newValue
+        # 仅保留与用户回答相同的 fieldItem
+        self['fieldItems'] = list(filter(lambda x: x['content'] == newValue, self.acceptableFieldItems))
+        assert len(self['fieldItems']) == 1, f"单选问题 {self['title']} 实际获得了 {len(self['fieldItems'])} 个答案"
+
+    def _setMultiChoiceValue(self, newValue: Text):
+        userChoices = newValue.split("|")
+        # 先筛选出用户选择的选项
+        finalSelectedFieldItems = list(filter(lambda field: field['content'] in userChoices, self.acceptableFieldItems))
+        self['fieldItems'] = finalSelectedFieldItems
+        self['value'] = " ".join(list(map(lambda fieldItem: fieldItem['content'], finalSelectedFieldItems)))
+
+
 class Collection:
     # 初始化信息收集类
-    def __init__(self, todaLoginService: TodayLoginService, userInfo):
-        self.session = todaLoginService.session
-        self.host = todaLoginService.host
+    def __init__(self, todayLoginService: TodayLoginService, userInfo):
+        self.session = todayLoginService.session
+        self.host = todayLoginService.host
         self.userInfo = userInfo
-        self.form = None
+        self.form: Optional[List] = None
         self.collectWid = None
         self.formWid = None
         self.schoolTaskWid = None
@@ -43,43 +168,27 @@ class Collection:
 
     # 填写表单
     def fillForm(self):
-        index = 0
-        for formItem in self.form[:]:
-            # 只处理必填项
-            if formItem['isRequired'] == 1:
-                userForm = self.userInfo['forms'][index]['form']
-                # 判断用户是否需要检查标题
-                if self.userInfo['checkTitle'] == 1:
-                    # 如果检查到标题不相等
-                    if formItem['title'] != userForm['title']:
-                        raise Exception(
-                            f'\r\n第{index + 1}个配置项的标题不正确\r\n您的标题为：{userForm["title"]}\r\n系统的标题为：{formItem["title"]}')
-                # 文本选项直接赋值
-                if formItem['fieldType'] == 1 or formItem['fieldType'] == 5:
-                    formItem['value'] = userForm['value']
-                # 单选框填充
-                elif formItem['fieldType'] == 2:
-                    formItem['value'] = userForm['value']
-                    # 单选需要移除多余的选项
-                    fieldItems = formItem['fieldItems']
-                    for fieldItem in fieldItems[:]:
-                        if fieldItem['content'] != userForm['value']:
-                            fieldItems.remove(fieldItem)
-                # 多选填充
-                elif formItem['fieldType'] == 3:
-                    fieldItems = formItem['fieldItems']
-                    userItems = userForm['value'].split('|')
-                    for fieldItem in fieldItems[:]:
-                        if fieldItem['content'] in userItems:
-                            formItem['value'] += fieldItem['content'] + ' '
-                        else:
-                            fieldItems.remove(fieldItem)
-                if formItem['fieldType'] == 4:
-                    pass
-                index += 1
-            else:
-                # 移除非必填选项
-                self.form.remove(formItem)
+        # 最终 finalFormItems，独立出来是为了防止在遍历过程中修改被遍历的内容，这可能会造成指针混乱或者修改不生效
+        finalFormItems: List[FormItem] = []
+
+        # 用户预设的，对问题的回答
+        userForms = UserForms(self.userInfo['forms'])
+
+        # 使用 FormItem 类初始化原始表单
+        forms = map(lambda formItemDict: FormItem(formItemDict), self.form)
+
+        # 仅处理必填
+        requiredForms = filter(lambda formItem: formItem.isRequired, forms)
+
+        for idx, formItem in enumerate(requiredForms):
+            # 取得用户期望的回答
+            answerValue = userForms.getValueByTitle(formItem['title'], raiseIfNotFound=self.userInfo['checkTitle'])
+            if answerValue is None:
+                answerValue = userForms.getValueByIndex(idx)
+            formItem.value = answerValue
+            finalFormItems.append(formItem)
+
+        self.form = finalFormItems
 
     # 提交表单
     def submitForm(self):
