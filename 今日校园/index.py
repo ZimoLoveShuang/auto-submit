@@ -1,4 +1,5 @@
 import yaml
+import time
 from todayLoginService import TodayLoginService
 from actions.autoSign import AutoSign
 from actions.collection import Collection
@@ -18,19 +19,26 @@ def getYmlConfig(yaml_file='config.yml'):
 def main():
     config = getYmlConfig()
     for user in config['users']:
-        rl = RlMessage(user['user']['email'],user['user']['wx'])
+        rl = RlMessage(user['user']['email'],user['user']['sc'],user['user']['pp'])
+        max_tries = 0
         if config['debug']:
             msg = working(user)
         else:
-            try:
-                msg = working(user)
-
-            except Exception as e:
-                msg = str(e)
-                print(msg)
-                msg = rl.sendWX('error', msg)
+            while max_tries < 5:
+                try:
+                    msg = working(user)
+                    print(msg)
+                    msg = rl.send('成功', msg)
+                    break;
+                except Exception as e:
+                    msg = str(e)
+                    print(msg)
+                    time.sleep(5)
+                    print('出错！五秒后重试……')
+                    if max_tries >= 4:
+                        msg = rl.send('出错', msg)
+                max_tries+=1
         print(msg)
-        msg = rl.sendWX('maybe', msg)
 
 def working(user):
     today = TodayLoginService(user['user'])
