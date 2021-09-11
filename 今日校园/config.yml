@@ -28,6 +28,10 @@ users:
       address: '宜宾市（自己改）'
       #email 接受通知消息的邮箱
       email: ''
+      #Server酱Turbo的PUSHKEY（请自行注册获取）https://sct.ftqq.com/
+      sc : ''
+      #PushPlus的token http://pushplus.plus/
+      pp : ''
       # 附上经纬度查询地址（请自行选择自己的学校地址，address，lon，lat都要填查询到的）：http://api.map.baidu.com/lbsapi/getpoint/index.html
       #lon 经度
       lon: 104.616858
@@ -73,6 +77,10 @@ users:
         address: '四川省（自己改）'
         #email 接受通知消息的邮箱
         email: ''
+        #Server酱Turbo的PUSHKEY（请自行注册获取）https://sct.ftqq.com/
+        sc : ''
+        #PushPlus的token http://pushplus.plus/
+        pp : ''
         # 附上经纬度查询地址（请自行选择自己的学校地址，address，lon，lat都要填查询到的）：http://api.map.baidu.com/lbsapi/getpoint/index.html
         # 经纬度信息
         lon: 104.6191824
@@ -117,6 +125,10 @@ users:
       address: ''
       #email 接受通知消息的邮箱，通知功能暂时未写
       email: ''
+      #Server酱Turbo的PUSHKEY（请自行注册获取）https://sct.ftqq.com/
+      sc : ''
+      #PushPlus的token http://pushplus.plus/
+      pp : ''
       #school 学校全称
       schoolName: 武汉船舶职业技术学院
       # 附上经纬度查询地址（请自行选择自己的学校地址，address，lon，lat都要填查询到的）：http://api.map.baidu.com/lbsapi/getpoint/index.html
@@ -154,6 +166,10 @@ users:
       address: ''
       #email 接受通知消息的邮箱
       email: ''
+      #Server酱Turbo的PUSHKEY（请自行注册获取）https://sct.ftqq.com/
+      sc : ''
+      #PushPlus的token http://pushplus.plus/
+      pp : ''
       # 附上经纬度查询地址（请自行选择自己的学校地址，address，lon，lat都要填查询到的）：http://api.map.baidu.com/lbsapi/getpoint/index.html
       #lon 经度
       lon: 105.895856
