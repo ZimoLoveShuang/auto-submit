@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 import oss2
 from login import *
+from encrypt import *
 
 ############配置############
+sessionyml = getYmlConfig('session.yml')
 Cookies = {
-    'acw_tc': '',
-    'MOD_AUTH_CAS': '',
+    'acw_tc': sessionyml['Cookies']['acw_tc'],
+    'MOD_AUTH_CAS': sessionyml['Cookies']['MOD_AUTH_CAS'],
 }
-sessionToken = ''
-CpdailyInfo = ''
+sessionToken = sessionyml['sessionToken']
+CpdailyInfo = sessionyml['CpdailyInfo']
 ############配置############
 
 # 全局
@@ -27,7 +29,7 @@ def queryForm():
     getModAuthCas(data)
     headers = {
         'Accept': 'application/json, text/plain, */*',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 yiban/8.1.11 cpdaily/8.1.11 wisedu/8.1.11',
+        'User-Agent': 'Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36',
         'content-type': 'application/json',
         'Accept-Encoding': 'gzip,deflate',
         'Accept-Language': 'zh-CN,en-US;q=0.8',
@@ -70,10 +72,10 @@ def fillForm(form):
                 log('第%d个默认配置不正确，请检查' % sort)
                 exit(-1)
             # 文本直接赋值
-            if formItem['fieldType'] == 1:
+            if formItem['fieldType'] == '1':
                 formItem['value'] = default['value']
             # 单选框需要删掉多余的选项
-            if formItem['fieldType'] == 2:
+            if formItem['fieldType'] == '2':
                 # 填充默认值
                 formItem['value'] = default['value']
                 fieldItems = formItem['fieldItems']
@@ -81,7 +83,7 @@ def fillForm(form):
                     if fieldItems[i]['content'] != default['value']:
                         del fieldItems[i]
             # 多选需要分割默认选项值，并且删掉无用的其他选项
-            if formItem['fieldType'] == 3:
+            if formItem['fieldType'] == '3':
                 fieldItems = formItem['fieldItems']
                 defaultValues = default['value'].split(',')
                 for i in range(0, len(fieldItems))[::-1]:
@@ -94,7 +96,7 @@ def fillForm(form):
                     if flag:
                         del fieldItems[i]
             # 图片需要上传到阿里云oss
-            if formItem['fieldType'] == 4:
+            if formItem['fieldType'] == '4':
                 fileName = uploadPicture(default['value'])
                 formItem['value'] = getPictureUrl(fileName)
             log('必填问题%d：' % sort + formItem['title'])
@@ -136,21 +138,30 @@ def getPictureUrl(fileName):
 
 # 提交表单
 def submitForm(formWid, address, collectWid, schoolTaskWid, form):
+    extension = {
+        "model": "OPPO R11 Plus",
+        "appVersion": "9.0.8",
+        "systemVersion": "9.1.0",
+        "userId": user['username'],
+        "systemName": "android",
+        "lon": user['lon'],
+        "lat": user['lat'],
+        "deviceId": str(uuid.uuid1()),
+    }
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.12.4',
+        'User-Agent': 'Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36',
         'CpdailyStandAlone': '0',
         'extension': '1',
-        'Cpdaily-Extension': '1wAXD2TvR72sQ8u+0Dw8Dr1Qo1jhbem8Nr+LOE6xdiqxKKuj5sXbDTrOWcaf v1X35UtZdUfxokyuIKD4mPPw5LwwsQXbVZ0Q+sXnuKEpPOtk2KDzQoQ89KVs gslxPICKmyfvEpl58eloAZSZpaLc3ifgciGw+PIdB6vOsm2H6KSbwD8FpjY3 3Tprn2s5jeHOp/3GcSdmiFLYwYXjBt7pwgd/ERR3HiBfCgGGTclquQz+tgjJ PdnDjA==',
+        'Cpdaily-Extension': DESEncrypt(json.dumps(extension)),
         'Content-Type': 'application/json; charset=utf-8',
         # 请注意这个应该和配置文件中的host保持一致
         'Host': host,
         'Connection': 'Keep-Alive',
-        'Accept-Encoding': 'gzip'
+        'Accept-Encoding': 'gzip',
     }
-
     # 默认正常的提交参数json
     params = {"formWid": formWid, "address": address, "collectWid": collectWid, "schoolTaskWid": schoolTaskWid,
-              "form": form}
+              "form": form, "uaIsCpadaily": True}
     # print(params)
     submitForm = 'https://{host}/wec-counselor-collector-apps/stu/collector/submitForm'.format(host=host)
     r = session.post(url=submitForm, headers=headers, data=json.dumps(params))
@@ -158,18 +169,15 @@ def submitForm(formWid, address, collectWid, schoolTaskWid, form):
     return msg
 
 
-# 发送邮件通知
+title_text = '今日校园信息收集填写结果通知'
+
+# 发送Server酱通知
 def sendMessage(send, msg):
     if send != '':
-        log('正在发送邮件通知。。。')
-        res = requests.post(url='http://www.zimo.wiki:8080/mail-sender/sendMail',
-                            data={'title': '今日校园疫情上报自动提交结果通知', 'content': getTimeStr() + str(msg), 'to': send})
-        code = res.json()['code']
-        if code == 0:
-            log('发送邮件通知成功。。。')
-        else:
-            log('发送邮件通知失败。。。')
-            log(res.json())
+        log('正在发送Server酱')
+        res = requests.post(url='https://sctapi.ftqq.com/{0}.send'.format(config['Info']['ServerChan']),
+                            data={'text': title_text, 'desp': getTimeStr() + "\n" + str(msg)})
+        log('发送请求已发出')
 
 
 # 腾讯云函数启动函数
@@ -177,17 +185,17 @@ def main_handler(event, context):
     try:
         user = config['user']
         log('当前用户：' + str(user['username']))
-        log('脚本开始执行。。。')
-        log('正在查询最新待填写问卷。。。')
+        log('脚本开始执行')
+        log('正在查询最新待填写问卷')
         params = queryForm()
         if str(params) == 'None':
-            log('获取最新待填写问卷失败，可能是辅导员还没有发布。。。')
+            log('获取最新待填写问卷失败，可能是辅导员还没有发布')
             exit(-1)
-        log('查询最新待填写问卷成功。。。')
-        log('正在自动填写问卷。。。')
+        log('查询最新待填写问卷成功')
+        log('正在自动填写问卷')
         form = fillForm(params['form'])
-        log('填写问卷成功。。。')
-        log('正在自动提交。。。')
+        log('填写问卷成功')
+        log('正在自动提交')
         msg = submitForm(params['formWid'], user['address'], params['collectWid'],
                          params['schoolTaskWid'], form)
         if msg == 'SUCCESS':
@@ -196,18 +204,17 @@ def main_handler(event, context):
         elif msg == '该收集已填写无需再次填写':
             log('今日已提交！')
         else:
-            log('自动提交失败。。。')
+            log('自动提交失败')
             log('错误是' + msg)
             sendMessage(user['email'], '自动提交失败！错误是' + msg)
             exit(-1)
-    except:
-        return 'auto submit fail.'
+    except Exception as r:
+        return '未知错误 %s' %(r)
     else:
         return 'auto submit success.'
+
 
 
 # 配合Windows计划任务等使用
 if __name__ == '__main__':
     print(main_handler({}, {}))
-    # for user in config['users']:
-    #     log(getCpdailyApis(user))

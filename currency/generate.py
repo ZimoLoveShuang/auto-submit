@@ -16,9 +16,9 @@ def generate():
             default['title'] = formItem['title']
             default['type'] = formItem['fieldType']
             print('问题%d：' % sort + default['title'])
-            if default['type'] == 1:
+            if default['type'] == '1':
                 default['value'] = input("请输入文本：")
-            if default['type'] == 2:
+            if default['type'] == '2':
                 fieldItems = formItem['fieldItems']
                 num = 1
                 for fieldItem in fieldItems:
@@ -29,7 +29,7 @@ def generate():
                     print('输入错误，请重新执行此脚本')
                     exit(-1)
                 default['value'] = fieldItems[choose - 1]['content']
-            if default['type'] == 3:
+            if default['type'] == '3':
                 fieldItems = formItem['fieldItems']
                 num = 1
                 for fieldItem in fieldItems:
@@ -46,7 +46,7 @@ def generate():
                         default['value'] += fieldItems[choose - 1]['content'] + ','
                     else:
                         default['value'] += fieldItems[choose - 1]['content']
-            if default['type'] == 4:
+            if default['type'] == '4':
                 default['value'] = input("请输入图片名称：")
             one['default'] = default
             defaults.append(one)
